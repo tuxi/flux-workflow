@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 func TestBuildAwaitBinding_ResolvesProviderFromInput(t *testing.T) {

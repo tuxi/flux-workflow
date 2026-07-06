@@ -1,7 +1,7 @@
 package nodes
 
 import (
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // NodeFactory 用于节点Step的构建

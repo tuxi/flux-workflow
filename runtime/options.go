@@ -7,7 +7,7 @@ import (
 	"github.com/tuxi/flux-workflow/pkg/lock"
 	"github.com/tuxi/flux-workflow/repository"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 	"gorm.io/gorm"
 )
 

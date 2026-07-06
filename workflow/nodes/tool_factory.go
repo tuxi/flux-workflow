@@ -3,8 +3,8 @@ package nodes
 import (
 	"fmt"
 
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 type ToolFactory struct {

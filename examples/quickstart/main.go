@@ -15,8 +15,8 @@ import (
 
 	"github.com/tuxi/flux-workflow/runtime"
 
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 // greetTool is a trivial custom tool: it reads `name` from the node input and
@@ -24,7 +24,7 @@ import (
 type greetTool struct{}
 
 func (greetTool) Name() string                  { return "greet" }
-func (greetTool) Description() string            { return "greets the given name" }
+func (greetTool) Description() string           { return "greets the given name" }
 func (greetTool) InputSchema() tool.DataSchema  { return tool.DataSchema{} }
 func (greetTool) OutputSchema() tool.DataSchema { return tool.DataSchema{} }
 func (greetTool) Mode() tool.ExecutionMode      { return tool.SyncExecution }

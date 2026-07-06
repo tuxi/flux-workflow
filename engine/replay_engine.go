@@ -9,7 +9,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // ReplayTrace 一次任务执行的完整回放结果

@@ -9,7 +9,7 @@ import (
 	"github.com/tuxi/flux-workflow/repository"
 	"time"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // WorkflowRegistry 工作流注册

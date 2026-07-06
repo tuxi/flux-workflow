@@ -3,7 +3,7 @@ package engine
 import (
 	"github.com/tuxi/flux-workflow/domain"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // engine/run_plan.go

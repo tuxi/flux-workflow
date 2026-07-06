@@ -12,8 +12,8 @@ import (
 	"github.com/tuxi/flux-workflow/domain"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 func helloDef() *definition.WorkflowDefinition {

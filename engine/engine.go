@@ -19,7 +19,7 @@ import (
 
 	workflow "github.com/tuxi/flux-workflow/workflow"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // Engine 工作流执行器

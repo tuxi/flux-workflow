@@ -3,7 +3,7 @@ package graph
 import (
 	"fmt"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // Graph DAG 的基础结构

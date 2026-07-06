@@ -1,7 +1,7 @@
 package nodes
 
 import (
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 // RegisterBuiltinNodes registers the 6 built-in node types that every

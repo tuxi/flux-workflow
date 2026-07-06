@@ -1,7 +1,7 @@
 package nodes
 
 import (
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 type SubWorkflowStep struct {

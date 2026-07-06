@@ -9,7 +9,7 @@ import (
 	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"strings"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 	"github.com/tuxi/flux/utils"
 )
 

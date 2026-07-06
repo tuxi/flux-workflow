@@ -8,7 +8,7 @@ import (
 	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"testing"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // newTestEngineForSkip 返回一个足以支持 finalizeSkippedNode / finalizeBlockedNode 的 Engine。

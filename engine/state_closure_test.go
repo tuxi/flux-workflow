@@ -5,7 +5,7 @@ import (
 	"github.com/tuxi/flux-workflow/engine/graph"
 	"testing"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // testDAG creates a simple A->B->C DAG for validation tests.

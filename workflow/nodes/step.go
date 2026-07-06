@@ -3,7 +3,7 @@ package nodes
 import (
 	"time"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 // RetryPolicy 重试机制

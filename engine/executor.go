@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 // 执行节点的统一入口

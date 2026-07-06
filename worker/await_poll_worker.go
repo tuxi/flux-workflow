@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 type awaitCompleter interface {

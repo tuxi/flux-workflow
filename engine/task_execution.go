@@ -10,7 +10,7 @@ import (
 	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"time"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 func (e *Engine) loadWorkflowForTask(

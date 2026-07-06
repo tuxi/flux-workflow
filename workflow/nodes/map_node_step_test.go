@@ -6,7 +6,7 @@ import (
 	"github.com/tuxi/flux-workflow/eventbus"
 	"testing"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 
 	"github.com/stretchr/testify/require"
 )

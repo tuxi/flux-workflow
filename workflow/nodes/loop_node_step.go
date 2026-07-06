@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 	"github.com/tuxi/flux/utils"
 )
 

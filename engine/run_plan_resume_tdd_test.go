@@ -18,8 +18,8 @@ import (
 
 	repository2 "github.com/tuxi/flux-workflow/repository"
 
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 	"github.com/tuxi/flux/utils"
 
 	"github.com/stretchr/testify/require"

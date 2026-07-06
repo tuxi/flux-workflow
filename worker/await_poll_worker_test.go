@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 type fakeAwaitPollBindingRepo struct {

@@ -7,7 +7,7 @@ import (
 	"github.com/tuxi/flux-workflow/repository"
 	"time"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 type AsyncEmitter struct {

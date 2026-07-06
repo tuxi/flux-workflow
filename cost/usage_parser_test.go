@@ -3,7 +3,7 @@ package cost
 import (
 	"testing"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 func TestValidateUsageFacts(t *testing.T) {

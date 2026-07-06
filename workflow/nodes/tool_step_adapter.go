@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 // ToolStepAdapter 桥接 Tool → Step 的适配器

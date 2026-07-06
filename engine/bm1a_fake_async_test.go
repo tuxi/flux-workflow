@@ -18,8 +18,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 
 	"github.com/stretchr/testify/require"
 	"gorm.io/datatypes"

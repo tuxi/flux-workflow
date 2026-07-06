@@ -3,7 +3,7 @@ package nodes
 import (
 	"github.com/tuxi/flux-workflow/domain"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 // AwaitStep 本身不在 Step.Run 中执行真正的等待逻辑。

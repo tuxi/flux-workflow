@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 type fakeUsageTool struct{}

@@ -12,7 +12,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 // AsyncWorker 异步节点事件调度器

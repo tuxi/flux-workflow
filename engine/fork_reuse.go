@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/workflow"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"time"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 func (e *Engine) CreateForkRun(

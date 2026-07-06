@@ -8,8 +8,8 @@ import (
 	"github.com/tuxi/flux-workflow/repository"
 	"strings"
 
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 type NodeReplayService interface {

@@ -3,7 +3,7 @@ package nodes
 import (
 	"fmt"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 type MapNodeFactory struct{}

@@ -3,8 +3,8 @@ package nodes
 import (
 	"sync"
 
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 // NodeExecContext 每一个节点的执行上下文，包含一个只读的TaskContext全局上下文

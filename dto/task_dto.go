@@ -1,9 +1,8 @@
 package dto
 
 import (
+	"github.com/tuxi/flux-workflow/definition"
 	"github.com/tuxi/flux-workflow/domain"
-
-	"github.com/tuxi/flux/definition"
 )
 
 type TaskSummary struct {

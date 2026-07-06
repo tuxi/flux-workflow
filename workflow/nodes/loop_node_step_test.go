@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 
 	"github.com/stretchr/testify/require"
 )

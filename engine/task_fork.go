@@ -9,7 +9,7 @@ import (
 	"github.com/tuxi/flux-workflow/repository"
 	"github.com/tuxi/flux-workflow/workflow"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 type TaskForkService struct {

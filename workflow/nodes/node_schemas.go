@@ -1,8 +1,8 @@
 package nodes
 
 import (
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
+	"github.com/tuxi/flux-workflow/definition"
+	"github.com/tuxi/flux-workflow/tool"
 )
 
 var StartNodeSchema = &NodeTypeSchema{

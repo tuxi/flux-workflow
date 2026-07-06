@@ -1,7 +1,7 @@
 package nodes
 
 import (
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // Node DAG 节点，带状态、依赖、重试策略

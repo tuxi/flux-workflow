@@ -1,6 +1,6 @@
 package nodes
 
-import "github.com/tuxi/flux/tool"
+import "github.com/tuxi/flux-workflow/tool"
 
 const TaskEventFanoutProgress = "fanout_progress"
 

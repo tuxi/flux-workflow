@@ -6,7 +6,7 @@ import (
 	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"testing"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 )
 
 // fanInDef 构造一个典型的 fan-in 拓扑：

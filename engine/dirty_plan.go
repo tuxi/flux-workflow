@@ -7,7 +7,7 @@ import (
 	"github.com/tuxi/flux-workflow/workflow"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
 
-	"github.com/tuxi/flux/definition"
+	"github.com/tuxi/flux-workflow/definition"
 
 	"fmt"
 	"strconv"
