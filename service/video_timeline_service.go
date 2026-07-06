@@ -156,12 +156,15 @@ func (s *videoTimelineService) loadWorkflowDefinition(ctx context.Context, workf
 	return &def, nil
 }
 
-func resolveTimelineBuilder(def *definition.WorkflowDefinition) (*definition.TimelineBuilderDefinition, error) {
+// outputSliceTimeline 是 timeline 视图在 definition.OutputSlices 中的键。
+const outputSliceTimeline = "timeline"
+
+func resolveTimelineBuilder(def *definition.WorkflowDefinition) (*definition.OutputSliceDefinition, error) {
 	if def == nil {
 		return nil, fmt.Errorf("workflow definition is nil")
 	}
-	if def.TimelineBuilder != nil && strings.TrimSpace(def.TimelineBuilder.Tool) != "" {
-		return def.TimelineBuilder, nil
+	if slice := def.OutputSlices[outputSliceTimeline]; slice != nil && strings.TrimSpace(slice.Tool) != "" {
+		return slice, nil
 	}
 
 	for _, nodeDef := range def.Nodes {
@@ -172,7 +175,7 @@ func resolveTimelineBuilder(def *definition.WorkflowDefinition) (*definition.Tim
 		if strings.TrimSpace(toolName) == "" {
 			return nil, fmt.Errorf("legacy build_video_timeline node missing config.tool")
 		}
-		return &definition.TimelineBuilderDefinition{
+		return &definition.OutputSliceDefinition{
 			Tool:         toolName,
 			Config:       nodeDef.Config,
 			InputMapping: nodeDef.InputMapping,
@@ -182,7 +185,7 @@ func resolveTimelineBuilder(def *definition.WorkflowDefinition) (*definition.Tim
 
 	if def.Name == "goods_video_pro_v3" {
 		// 兼容旧数据
-		def.TimelineBuilder = &definition.TimelineBuilderDefinition{
+		slice := &definition.OutputSliceDefinition{
 			Tool: "build_goods_video_pro_timeline",
 			Config: map[string]any{
 				"tool": "build_goods_video_pro_timeline",
@@ -206,7 +209,11 @@ func resolveTimelineBuilder(def *definition.WorkflowDefinition) (*definition.Tim
 				"audio_transition_duration": "input.audio_transition_duration ?? 0.08",
 			},
 		}
-		return def.TimelineBuilder, nil
+		if def.OutputSlices == nil {
+			def.OutputSlices = map[string]*definition.OutputSliceDefinition{}
+		}
+		def.OutputSlices[outputSliceTimeline] = slice
+		return slice, nil
 	}
 
 	return nil, fmt.Errorf("video timeline builder not configured")
@@ -223,7 +230,7 @@ func buildVideoTimelineReplayContext(
 
 func resolveTimelineInput(
 	ctx *nodes.Context,
-	builderDef *definition.TimelineBuilderDefinition,
+	builderDef *definition.OutputSliceDefinition,
 ) (map[string]any, error) {
 	if ctx == nil {
 		return nil, fmt.Errorf("video timeline context is nil")

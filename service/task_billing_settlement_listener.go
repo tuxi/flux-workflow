@@ -9,6 +9,12 @@ import (
 	"math"
 )
 
+// 计费结算事件类型（业务侧自有语义，不属于引擎核心事件集）。
+const (
+	taskEventPointsRefunded     = "task_points_refunded"
+	taskEventPointsRefundFailed = "task_points_refund_failed"
+)
+
 type TaskBillingSettlementListener struct {
 	billingTaskSvc BillingTaskService
 	taskRepo       repository.TaskRepository
@@ -96,10 +102,10 @@ func (l *TaskBillingSettlementListener) handleFinalFailed(ctx context.Context, e
 	}
 	if err := l.billingTaskSvc.SettleTaskFailure(ctx, evt.TaskID, reason); err != nil {
 		log.Printf("task billing settle failure failed: task=%d event=%s err=%v", evt.TaskID, evt.Type, err)
-		l.publishBillingEvent(evt, domain.TaskEventPointsRefundFailed, err.Error())
+		l.publishBillingEvent(evt, taskEventPointsRefundFailed, err.Error())
 		return
 	}
-	l.publishBillingEvent(evt, domain.TaskEventPointsRefunded, "points refunded")
+	l.publishBillingEvent(evt, taskEventPointsRefunded, "points refunded")
 }
 
 func (l *TaskBillingSettlementListener) publishBillingEvent(evt *domain.TaskEvent, eventType, message string) {
@@ -111,5 +117,8 @@ func (l *TaskBillingSettlementListener) publishBillingEvent(evt *domain.TaskEven
 		RootTaskID: evt.RootTaskID,
 		Type:       eventType,
 		Message:    message,
+		// 计费审计事件：只入库、不推 WS。显式声明 Grade，
+		// 不再依赖 eventbus.inferGrade 对 "points_refund" 的字符串识别。
+		Grade: domain.GradeAudit,
 	})
 }

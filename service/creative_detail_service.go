@@ -168,12 +168,15 @@ func (s *creativeDetailService) loadWorkflowDefinition(ctx context.Context, work
 	return &def, nil
 }
 
-func resolveCreativeDetailBuilder(def *definition.WorkflowDefinition) (*definition.CreativeDetailBuilderDefinition, error) {
+// outputSliceCreativeDetail 是 creative_detail 视图在 definition.OutputSlices 中的键。
+const outputSliceCreativeDetail = "creative_detail"
+
+func resolveCreativeDetailBuilder(def *definition.WorkflowDefinition) (*definition.OutputSliceDefinition, error) {
 	if def == nil {
 		return nil, fmt.Errorf("workflow definition is nil")
 	}
-	if def.CreativeDetailBuilder != nil && strings.TrimSpace(def.CreativeDetailBuilder.Tool) != "" {
-		return def.CreativeDetailBuilder, nil
+	if slice := def.OutputSlices[outputSliceCreativeDetail]; slice != nil && strings.TrimSpace(slice.Tool) != "" {
+		return slice, nil
 	}
 
 	for _, nodeDef := range def.Nodes {
@@ -184,7 +187,7 @@ func resolveCreativeDetailBuilder(def *definition.WorkflowDefinition) (*definiti
 		if strings.TrimSpace(toolName) == "" {
 			return nil, fmt.Errorf("legacy build_creative_detail node missing config.tool")
 		}
-		return &definition.CreativeDetailBuilderDefinition{
+		return &definition.OutputSliceDefinition{
 			Tool:         toolName,
 			Config:       nodeDef.Config,
 			InputMapping: nodeDef.InputMapping,
@@ -242,7 +245,7 @@ func buildCreativeDetailReplayContext(
 
 func resolveCreativeDetailInput(
 	ctx *nodes.Context,
-	builderDef *definition.CreativeDetailBuilderDefinition,
+	builderDef *definition.OutputSliceDefinition,
 ) (map[string]any, error) {
 	if ctx == nil {
 		return nil, fmt.Errorf("creative detail context is nil")
@@ -267,15 +270,28 @@ func resolveCreativeDetailInput(
 	return resolved, nil
 }
 
+// parseLegacyTaskCreativeDetail 从旧版持久化的 task 输出 JSON 中直接读取
+// 内嵌的 creative_detail。creative_detail 已不再是核心 TaskOutput 的字段
+// （见 domain.TaskOutput 注释），因此这里自行按旧格式解析，不再依赖核心输出结构。
 func parseLegacyTaskCreativeDetail(outputJSON []byte) *domain.CreativeDetail {
 	if len(outputJSON) == 0 {
 		return nil
 	}
-	out, err := domain.ParseFinal(outputJSON)
-	if err != nil || out == nil {
+
+	// 旧格式：{"final": {"creative_detail": {...}}} 或顶层 {"creative_detail": {...}}
+	var envelope struct {
+		Final struct {
+			CreativeDetail *domain.CreativeDetail `json:"creative_detail"`
+		} `json:"final"`
+		CreativeDetail *domain.CreativeDetail `json:"creative_detail"`
+	}
+	if err := json.Unmarshal(outputJSON, &envelope); err != nil {
 		return nil
 	}
-	return out.CreativeDetail
+	if envelope.Final.CreativeDetail != nil {
+		return envelope.Final.CreativeDetail
+	}
+	return envelope.CreativeDetail
 }
 
 type noopToolEmitter struct{}
