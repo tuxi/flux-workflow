@@ -1,0 +1,18 @@
+package llm
+
+import "context"
+
+type Provider interface {
+	Name() string
+
+	Chat(
+		ctx context.Context,
+		req *ChatRequest,
+	) (*ChatResponse, error)
+
+	ChatStream(
+		ctx context.Context,
+		req *ChatRequest,
+		onChunk StreamCallback,
+	) (*ChatResponse, error)
+}
