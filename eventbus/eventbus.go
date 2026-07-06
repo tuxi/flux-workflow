@@ -4,7 +4,6 @@ import (
 	"context"
 	"flux-workflow/domain"
 	"flux-workflow/repository"
-	"flux-workflow/websocket"
 	"strings"
 	"sync"
 )
@@ -22,7 +21,7 @@ import (
 //   - inferGrade: remove fallback, all emitters set Grade explicitly
 type EventBus struct {
 	eventRepo repository.EventRepository
-	publisher websocket.EventPublisher
+	publisher Publisher
 
 	subscribers map[string][]chan *domain.TaskEvent
 	mu          sync.RWMutex
@@ -30,7 +29,7 @@ type EventBus struct {
 
 func NewEventBus(
 	repo repository.EventRepository,
-	pub websocket.EventPublisher,
+	pub Publisher,
 ) *EventBus {
 
 	return &EventBus{
@@ -66,25 +65,25 @@ func (b *EventBus) Publish(taskID int64, event *domain.TaskEvent) {
 
 	// 2. 推送 WS：Transient / Persistent
 	if b.publisher != nil && event.Grade != domain.GradeAudit {
-		b.publisher.Publish(websocket.TaskChannel(taskID), event)
+		b.publisher.Publish(TaskChannel(taskID), event)
 	}
 
 	// 3. 内部订阅（所有等级都分发，引擎监听需要）
+	// 发送必须在锁内进行：Unsubscribe 先持写锁摘除 channel 再 close，
+	// 锁内发送保证不会向已 close 的 channel 发送。
 	b.mu.RLock()
-	subs := b.subscribers[event.Type]
-	b.mu.RUnlock()
-
-	for _, ch := range subs {
+	for _, ch := range b.subscribers[event.Type] {
 		select {
 		case ch <- event:
 		default:
 		}
 	}
+	b.mu.RUnlock()
 }
 
 // PublishToChannel 直接向指定 WS channel 推送事件，不写 DB。
 // 专用于回放等只需 WS 输出的场景。
-func (b *EventBus) PublishToChannel(ch websocket.Channel, event *domain.TaskEvent) {
+func (b *EventBus) PublishToChannel(ch Channel, event *domain.TaskEvent) {
 	if b.publisher != nil {
 		b.publisher.Publish(ch, event)
 	}
@@ -108,11 +107,8 @@ func inferGrade(eventType string) domain.EventGrade {
 		}
 	}
 
-	// Audit: 计费审计事件 — 只入库，不推送
-	if strings.Contains(eventType, "points_refund") {
-		return domain.GradeAudit
-	}
-
+	// Audit 等级不再靠事件名推断：需要只入库不推送的调用方（如计费审计）
+	// 应在发布时显式设置 event.Grade = GradeAudit。
 	return domain.GradePersistent
 }
 
@@ -125,4 +121,26 @@ func (b *EventBus) Subscribe(eventType string) <-chan *domain.TaskEvent {
 	b.mu.Unlock()
 
 	return ch
+}
+
+// Unsubscribe 摘除订阅并关闭 channel，令消费方的 range 循环退出。
+// 对未订阅的 channel 调用是安全的 no-op。
+func (b *EventBus) Unsubscribe(eventType string, ch <-chan *domain.TaskEvent) {
+	var closed chan *domain.TaskEvent
+
+	b.mu.Lock()
+	subs := b.subscribers[eventType]
+	for i, sub := range subs {
+		if sub == ch {
+			b.subscribers[eventType] = append(subs[:i], subs[i+1:]...)
+			closed = sub
+			break
+		}
+	}
+	b.mu.Unlock()
+
+	// 摘除后不会再有 Publish 引用它（发送在锁内），此时 close 安全
+	if closed != nil {
+		close(closed)
+	}
 }
