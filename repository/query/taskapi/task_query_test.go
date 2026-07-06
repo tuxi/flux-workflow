@@ -1,4 +1,4 @@
-package query
+package taskapi
 
 import (
 	"context"
@@ -25,7 +25,7 @@ func TestTaskRepositoryListByUserV2ExcludeModeKeys(t *testing.T) {
 		taskListModel(3, 100, "image_generation", "text_to_image", now),
 	}).Error)
 
-	repo := &taskRepository{db: db}
+	repo := New(db, nil)
 	items, total, err := repo.ListByUserV2(context.Background(), 100, dto.TaskListReq{
 		ExcludeModeKeys: " image_to_video, text_to_image ",
 	})

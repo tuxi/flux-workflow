@@ -15,6 +15,7 @@ import (
 	"flux-workflow/registry"
 	"flux-workflow/repository"
 	"flux-workflow/repository/query"
+	"flux-workflow/repository/query/taskapi"
 	"flux-workflow/service"
 	"flux-workflow/websocket"
 	"flux-workflow/worker"
@@ -74,6 +75,9 @@ func NewServer(db *gorm.DB, rdb *redis.Client, llmClient *llm.Client, ossClient 
 	)
 
 	taskRepo := query.NewTaskRepository(db, queue)
+	// 业务侧分页/详情查询（返回 dto）：在核心 taskRepo 之上包一层，
+	// 仅 HTTP handler 使用，核心存储层不引入 dto 依赖。
+	taskQueryRepo := taskapi.New(db, taskRepo)
 	eventRepo := query.NewEventRepository(db)
 	workflowVersionRepo := query.NewWorkflowVersionRepository(db)
 	workflowRepo := query.NewWorkflowRepository(db)
@@ -294,7 +298,7 @@ func NewServer(db *gorm.DB, rdb *redis.Client, llmClient *llm.Client, ossClient 
 	workflowHandler := handler.NewWorkflowHandler(
 		workflowRepo,
 		workflowVersionRepo,
-		taskRepo,
+		taskQueryRepo,
 		taskCostTraceRepo,
 		eventRepo,
 		nodeRuntimeRepo,
@@ -314,7 +318,7 @@ func NewServer(db *gorm.DB, rdb *redis.Client, llmClient *llm.Client, ossClient 
 
 	runInspectorHandler := handler.NewRunInspectorHandler(
 		eng,
-		taskRepo,
+		taskQueryRepo,
 		nodeRuntimeRepo,
 		eventRepo,
 		awaitBindingRepo,

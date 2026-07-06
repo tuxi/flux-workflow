@@ -20,7 +20,7 @@ import (
 	"time"
 
 	repository2 "flux-workflow/repository"
-	"flux-workflow/repository/query"
+	"flux-workflow/repository/query/taskapi"
 	internalservice "flux-workflow/service"
 
 	"github.com/tuxi/flux/definition"
@@ -37,7 +37,7 @@ import (
 type WorkflowHandler struct {
 	workflowRepo        repository2.WorkflowRepository // 自定义接口，存 workflow 元信息
 	workflowVersionRepo repository2.WorkflowVersionRepository
-	taskRepo            query.TaskQueryRepository
+	taskRepo            taskapi.TaskQueryRepository
 	taskCostTraceRepo   repository2.TaskCostTraceRepository
 	nodeRuntimeRepo     repository2.NodeRuntimeRepository
 	eventRepo           repository2.EventRepository
@@ -59,7 +59,7 @@ type WorkflowHandler struct {
 func NewWorkflowHandler(
 	workflowRepo repository2.WorkflowRepository,
 	workflowVersionRepo repository2.WorkflowVersionRepository,
-	taskRepo query.TaskQueryRepository,
+	taskRepo taskapi.TaskQueryRepository,
 	taskCostTraceRepo repository2.TaskCostTraceRepository,
 	eventRepo repository2.EventRepository,
 	nodeRuntimeRepo repository2.NodeRuntimeRepository,
