@@ -1,8 +1,8 @@
 package runtime
 
 import (
-	"flux-workflow/domain/entity"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain/entity"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

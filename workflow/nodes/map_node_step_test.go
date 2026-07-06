@@ -2,8 +2,8 @@ package nodes
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/eventbus"
 	"testing"
 
 	"github.com/tuxi/flux/definition"

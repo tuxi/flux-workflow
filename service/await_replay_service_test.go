@@ -1,7 +1,7 @@
 package service
 
 import (
-	"flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain"
 	"testing"
 
 	"github.com/stretchr/testify/require"

@@ -1,9 +1,9 @@
 package engine
 
 import (
-	"flux-workflow/domain"
-	"flux-workflow/workflow/nodes"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 )
 
 func (e *Engine) LoadForkParentSnapshot(runCtx *nodes.Context) error {

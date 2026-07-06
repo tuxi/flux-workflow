@@ -1,8 +1,8 @@
 package response
 
 import (
-	"flux-workflow/dto"
-	"flux-workflow/internal/consts"
+	"github.com/tuxi/flux-workflow/dto"
+	"github.com/tuxi/flux-workflow/internal/consts"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

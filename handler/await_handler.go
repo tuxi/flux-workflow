@@ -2,11 +2,11 @@ package handler
 
 import (
 	"errors"
-	"flux-workflow/domain"
-	"flux-workflow/engine"
-	"flux-workflow/pkg/response"
-	"flux-workflow/repository"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/engine"
+	"github.com/tuxi/flux-workflow/pkg/response"
+	"github.com/tuxi/flux-workflow/repository"
 	"net/http"
 	"strconv"
 	"strings"

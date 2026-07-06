@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"flux-workflow/pkg/response"
-	"flux-workflow/service"
+	"github.com/tuxi/flux-workflow/pkg/response"
+	"github.com/tuxi/flux-workflow/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

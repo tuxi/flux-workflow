@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain"
 	"strings"
 	"testing"
 

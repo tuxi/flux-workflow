@@ -3,9 +3,9 @@ package websocket
 import (
 	"context"
 	"errors"
-	"flux-workflow/domain"
-	"flux-workflow/repository"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/repository"
 
 	"gorm.io/gorm"
 )

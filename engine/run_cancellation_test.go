@@ -2,8 +2,8 @@ package engine
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/dto"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/dto"
 	"testing"
 	"time"
 

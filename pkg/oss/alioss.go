@@ -1,8 +1,8 @@
 package oss
 
 import (
-	"flux-workflow/domain/entity"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain/entity"
 	"log"
 	"os"
 	"path/filepath"

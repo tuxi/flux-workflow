@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"flux-workflow/domain"
-	"flux-workflow/workflow"
-	"flux-workflow/workflow/nodes"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/workflow"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"time"
 
 	"github.com/tuxi/flux/definition"

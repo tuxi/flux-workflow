@@ -1,9 +1,9 @@
 package database
 
 import (
-	"flux-workflow/domain/entity"
-	"flux-workflow/internal/config"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain/entity"
+	"github.com/tuxi/flux-workflow/internal/config"
 	"time"
 
 	"gorm.io/driver/postgres"

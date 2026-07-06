@@ -2,10 +2,10 @@ package engine
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/engine/graph"
-	"flux-workflow/eventbus"
-	"flux-workflow/workflow/nodes"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/engine/graph"
+	"github.com/tuxi/flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"testing"
 
 	"github.com/tuxi/flux/definition"

@@ -2,8 +2,8 @@ package eventbus
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/repository"
 	"strings"
 	"sync"
 )

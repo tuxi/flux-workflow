@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"sync"
 
-	"flux-workflow/domain"
-	"flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/repository"
 
 	"github.com/tuxi/flux/runtime"
 	"github.com/tuxi/flux/store"

@@ -3,9 +3,9 @@ package nodes
 import (
 	"crypto/sha1"
 	"encoding/hex"
-	"flux-workflow/domain"
-	"flux-workflow/runtimekeys"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/runtimekeys"
 	"strconv"
 	"strings"
 

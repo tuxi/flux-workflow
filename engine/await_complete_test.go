@@ -3,8 +3,8 @@ package engine
 import (
 	"context"
 	"encoding/json"
-	"flux-workflow/domain"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
 	"testing"
 	"time"
 

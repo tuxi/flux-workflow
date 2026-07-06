@@ -3,10 +3,10 @@ package query
 import (
 	"context"
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/domain/entity"
-	"flux-workflow/repository"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain/entity"
+	"github.com/tuxi/flux-workflow/repository"
 	"time"
 
 	"gorm.io/gorm"

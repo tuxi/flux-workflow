@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"flux-workflow/dto"
-	"flux-workflow/workflow"
 	"fmt"
+	"github.com/tuxi/flux-workflow/dto"
+	"github.com/tuxi/flux-workflow/workflow"
 	"sort"
 
 	"github.com/tuxi/flux/definition"

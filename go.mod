@@ -1,4 +1,4 @@
-module flux-workflow
+module github.com/tuxi/flux-workflow
 
 go 1.25.0
 

@@ -10,7 +10,7 @@ import (
 	"errors"
 	"strings"
 
-	"flux-workflow/engine"
+	"github.com/tuxi/flux-workflow/engine"
 
 	"github.com/redis/go-redis/v9"
 )

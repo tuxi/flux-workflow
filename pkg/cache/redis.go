@@ -2,8 +2,8 @@ package cache
 
 import (
 	"context"
-	"flux-workflow/internal/config"
 	"fmt"
+	"github.com/tuxi/flux-workflow/internal/config"
 	"time"
 
 	"github.com/redis/go-redis/v9"

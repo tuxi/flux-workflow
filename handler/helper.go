@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"flux-workflow/domain"
-	"flux-workflow/workflow/nodes"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"sort"
 	"strings"
 

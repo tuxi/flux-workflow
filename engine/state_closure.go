@@ -1,9 +1,9 @@
 package engine
 
 import (
-	"flux-workflow/domain"
-	"flux-workflow/engine/graph"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/engine/graph"
 )
 
 // ClosureValidationLevel indicates severity.

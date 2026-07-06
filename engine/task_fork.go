@@ -3,11 +3,11 @@ package engine
 import (
 	"context"
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/pkg/uuid"
-	"flux-workflow/repository"
-	"flux-workflow/workflow"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/pkg/uuid"
+	"github.com/tuxi/flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/workflow"
 
 	"github.com/tuxi/flux/definition"
 )

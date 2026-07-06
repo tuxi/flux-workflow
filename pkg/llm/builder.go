@@ -1,7 +1,7 @@
 package llm
 
 import (
-	"flux-workflow/internal/config"
+	"github.com/tuxi/flux-workflow/internal/config"
 
 	"github.com/redis/go-redis/v9"
 )

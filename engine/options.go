@@ -1,12 +1,12 @@
 package engine
 
 import (
-	"flux-workflow/cost"
-	"flux-workflow/repository"
-	"flux-workflow/workflow"
+	"github.com/tuxi/flux-workflow/cost"
+	"github.com/tuxi/flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/workflow"
 
-	"flux-workflow/eventbus"
-	"flux-workflow/pkg/lock"
+	"github.com/tuxi/flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/pkg/lock"
 )
 
 // EngineOption is a functional option for configuring an Engine.

@@ -2,8 +2,8 @@ package builtin
 
 import (
 	"context"
-	"flux-workflow/pkg/oss"
 	"fmt"
+	"github.com/tuxi/flux-workflow/pkg/oss"
 	"net/http"
 	"os"
 	"path/filepath"

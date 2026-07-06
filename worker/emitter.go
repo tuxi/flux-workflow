@@ -2,9 +2,9 @@ package worker
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/eventbus"
-	"flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/repository"
 	"time"
 
 	"github.com/tuxi/flux/tool"

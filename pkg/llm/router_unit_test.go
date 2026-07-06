@@ -3,7 +3,7 @@ package llm
 import (
 	"context"
 	"errors"
-	"flux-workflow/internal/config"
+	"github.com/tuxi/flux-workflow/internal/config"
 	"testing"
 )
 

@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain"
 )
 
 type RecordContext struct {

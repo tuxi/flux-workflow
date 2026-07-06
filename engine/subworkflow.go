@@ -3,10 +3,10 @@ package engine
 import (
 	"context"
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/runtimekeys"
-	"flux-workflow/workflow/nodes"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/runtimekeys"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"strings"
 
 	"github.com/tuxi/flux/definition"

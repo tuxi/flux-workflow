@@ -3,7 +3,7 @@ package websocket
 import (
 	"fmt"
 
-	"flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/eventbus"
 )
 
 // Channel 复用 eventbus 的通道类型，使 WSHub 天然满足 eventbus.Publisher，

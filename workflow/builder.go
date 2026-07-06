@@ -1,9 +1,9 @@
 package workflow
 
 import (
-	"flux-workflow/engine/graph"
-	"flux-workflow/workflow/nodes"
 	"fmt"
+	"github.com/tuxi/flux-workflow/engine/graph"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"reflect"
 
 	"github.com/tuxi/flux/definition"

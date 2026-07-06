@@ -2,7 +2,7 @@ package internal
 
 import (
 	"context"
-	"flux-workflow/engine"
+	"github.com/tuxi/flux-workflow/engine"
 	"sync"
 )
 

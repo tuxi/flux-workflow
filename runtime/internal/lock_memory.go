@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"flux-workflow/pkg/lock"
+	"github.com/tuxi/flux-workflow/pkg/lock"
 )
 
 // MemoryLock implements lock.DistributedLock with an in-memory mutex.

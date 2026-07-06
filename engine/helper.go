@@ -2,8 +2,8 @@ package engine
 
 import (
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/workflow/nodes"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 )
 
 func findNode(nodes map[string]nodes.Node, name string) *nodes.Node {

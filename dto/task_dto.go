@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain"
 
 	"github.com/tuxi/flux/definition"
 )

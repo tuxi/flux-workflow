@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/repository"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/repository"
 	"time"
 
 	"github.com/tuxi/flux/definition"

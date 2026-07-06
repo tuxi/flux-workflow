@@ -3,9 +3,9 @@ package worker
 import (
 	"context"
 	"errors"
-	"flux-workflow/domain"
-	"flux-workflow/engine"
-	"flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/engine"
+	"github.com/tuxi/flux-workflow/eventbus"
 	"testing"
 	"time"
 

@@ -12,9 +12,9 @@ package engine
 import (
 	"context"
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/workflow"
-	"flux-workflow/workflow/nodes"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/workflow"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"testing"
 	"time"
 

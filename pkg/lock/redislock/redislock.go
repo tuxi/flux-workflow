@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"time"
 
-	"flux-workflow/pkg/lock"
+	"github.com/tuxi/flux-workflow/pkg/lock"
 
 	"github.com/go-redsync/redsync/v4"
 	goredis "github.com/go-redsync/redsync/v4/redis/goredis/v9"

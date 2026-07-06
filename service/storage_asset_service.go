@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"flux-workflow/domain/entity"
-	"flux-workflow/dto"
+	"github.com/tuxi/flux-workflow/domain/entity"
+	"github.com/tuxi/flux-workflow/dto"
 )
 
 const (

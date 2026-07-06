@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"time"
 
-	"flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/repository"
 
 	"github.com/redis/go-redis/v9"
 )

@@ -1,6 +1,6 @@
 package service
 
-import "flux-workflow/engine"
+import "github.com/tuxi/flux-workflow/engine"
 
 // 以下服务是引擎能力，实现已迁移至 engine 包；
 // 这里保留类型别名，业务侧（handler/server）无需感知迁移。

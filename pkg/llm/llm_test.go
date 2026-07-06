@@ -2,9 +2,9 @@ package llm_test
 
 import (
 	"context"
-	"flux-workflow/internal/config"
-	"flux-workflow/pkg/llm"
 	"fmt"
+	"github.com/tuxi/flux-workflow/internal/config"
+	"github.com/tuxi/flux-workflow/pkg/llm"
 	"strings"
 	"testing"
 	"time"

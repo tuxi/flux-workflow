@@ -2,9 +2,9 @@ package websocket
 
 import (
 	"context"
-	"flux-workflow/domain"
-	aidto "flux-workflow/dto"
-	repository2 "flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/domain"
+	aidto "github.com/tuxi/flux-workflow/dto"
+	repository2 "github.com/tuxi/flux-workflow/repository"
 	"testing"
 	"time"
 

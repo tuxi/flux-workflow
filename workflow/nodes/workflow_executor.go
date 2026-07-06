@@ -1,7 +1,7 @@
 package nodes
 
 import (
-	"flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/repository"
 )
 
 // WorkflowExecutor 工作流执行协议

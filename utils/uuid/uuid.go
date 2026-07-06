@@ -25,7 +25,7 @@ func GenUUID16() string {
 
 func NewNode(i int64) *SnowNode {
 	node, err := snowflake.NewNode(i)
-	
+
 	if err != nil {
 		panic(err)
 	}

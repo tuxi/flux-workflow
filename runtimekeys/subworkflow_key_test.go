@@ -23,7 +23,7 @@ type sampleAnalyzeInput struct {
 
 func TestBuildSubWorkflowKey_NormalizesEquivalentInputs(t *testing.T) {
 	structInput := map[string]any{
-		"index": 0,
+		"index":      0,
 		"image_item": "https://example.com/833c0b.jpg",
 		"image_roles": []sampleImageRole{
 			{
@@ -49,7 +49,7 @@ func TestBuildSubWorkflowKey_NormalizesEquivalentInputs(t *testing.T) {
 	}
 
 	mapInput := map[string]any{
-		"index": 0,
+		"index":      0,
 		"image_item": "https://example.com/833c0b.jpg",
 		"image_roles": []any{
 			map[string]any{
@@ -81,4 +81,3 @@ func TestBuildSubWorkflowKey_NormalizesEquivalentInputs(t *testing.T) {
 		t.Fatalf("expected equivalent inputs to generate same sub key\nA=%s\nB=%s", keyA, keyB)
 	}
 }
-

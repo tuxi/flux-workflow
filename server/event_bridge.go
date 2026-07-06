@@ -2,9 +2,9 @@ package server
 
 import (
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/eventbus"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/eventbus"
 	"sync"
 	"time"
 )

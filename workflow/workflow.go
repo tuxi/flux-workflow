@@ -1,8 +1,8 @@
 package workflow
 
 import (
-	"flux-workflow/engine/graph"
-	"flux-workflow/workflow/nodes"
+	"github.com/tuxi/flux-workflow/engine/graph"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 
 	"github.com/tuxi/flux/definition"
 )

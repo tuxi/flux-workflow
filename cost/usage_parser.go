@@ -1,8 +1,8 @@
 package cost
 
 import (
-	"flux-workflow/workflow/nodes"
 	"fmt"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 
 	"github.com/tuxi/flux/tool"
 	"github.com/tuxi/flux/utils"

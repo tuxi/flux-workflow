@@ -2,9 +2,9 @@ package engine
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/workflow"
-	"flux-workflow/workflow/nodes"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/workflow"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 )
 
 // engine/run_context.go

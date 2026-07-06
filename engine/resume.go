@@ -2,9 +2,9 @@ package engine
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/workflow"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/workflow"
 	"time"
 )
 

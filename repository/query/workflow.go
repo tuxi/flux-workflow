@@ -2,9 +2,9 @@ package query
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/domain/entity"
-	"flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain/entity"
+	"github.com/tuxi/flux-workflow/repository"
 	"time"
 
 	"gorm.io/gorm"

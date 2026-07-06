@@ -2,12 +2,12 @@ package worker
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/engine"
-	"flux-workflow/eventbus"
-	"flux-workflow/pkg/lock"
-	"flux-workflow/repository"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/engine"
+	"github.com/tuxi/flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/pkg/lock"
+	"github.com/tuxi/flux-workflow/repository"
 	"strings"
 	"time"
 

@@ -13,10 +13,10 @@ import (
 	"fmt"
 	"strings"
 
-	"flux-workflow/domain"
-	"flux-workflow/domain/entity"
-	"flux-workflow/dto"
-	"flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain/entity"
+	"github.com/tuxi/flux-workflow/dto"
+	"github.com/tuxi/flux-workflow/repository"
 
 	"gorm.io/gorm"
 )

@@ -1,11 +1,11 @@
 package runtime
 
 import (
-	"flux-workflow/cost"
-	"flux-workflow/engine"
-	"flux-workflow/eventbus"
-	"flux-workflow/pkg/lock"
-	"flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/cost"
+	"github.com/tuxi/flux-workflow/engine"
+	"github.com/tuxi/flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/pkg/lock"
+	"github.com/tuxi/flux-workflow/repository"
 
 	"github.com/tuxi/flux/tool"
 	"gorm.io/gorm"

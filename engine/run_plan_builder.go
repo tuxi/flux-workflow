@@ -2,11 +2,11 @@ package engine
 
 import (
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/engine/graph"
-	"flux-workflow/workflow"
-	"flux-workflow/workflow/nodes"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/engine/graph"
+	"github.com/tuxi/flux-workflow/workflow"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"log"
 	"strconv"
 

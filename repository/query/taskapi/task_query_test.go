@@ -2,9 +2,9 @@ package taskapi
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/domain/entity"
-	"flux-workflow/dto"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain/entity"
+	"github.com/tuxi/flux-workflow/dto"
 	"testing"
 	"time"
 

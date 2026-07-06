@@ -1,9 +1,9 @@
 package engine
 
 import (
-	"flux-workflow/engine/graph"
-	"flux-workflow/workflow"
 	"fmt"
+	"github.com/tuxi/flux-workflow/engine/graph"
+	"github.com/tuxi/flux-workflow/workflow"
 )
 
 func (e *Engine) validateResumeBoundary(

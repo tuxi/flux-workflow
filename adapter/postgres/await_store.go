@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"context"
-	"flux-workflow/domain"
-	"flux-workflow/repository"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/repository"
 	"strconv"
 	"time"
 

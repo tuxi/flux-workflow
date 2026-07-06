@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/domain"
 
 	"github.com/stretchr/testify/require"
 	"github.com/tuxi/flux/definition"

@@ -38,10 +38,10 @@ type TaskEvent struct {
 }
 
 const (
-	TaskEventStarted            = "task_started"
-	TaskEventSucceeded          = "task_succeeded"
-	TaskEventFailed             = "task_failed"
-	TaskEventSuspended          = "task_suspended"
+	TaskEventStarted           = "task_started"
+	TaskEventSucceeded         = "task_succeeded"
+	TaskEventFailed            = "task_failed"
+	TaskEventSuspended         = "task_suspended"
 	TaskEventFinalFailed       = "task_final_failed"
 	TaskEventNodeCompleteAsync = "node_complete_async"
 )

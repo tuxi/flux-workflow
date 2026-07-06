@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/engine"
-	"flux-workflow/repository"
-	"flux-workflow/workflow/nodes"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/engine"
+	"github.com/tuxi/flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"strings"
 
 	"github.com/tuxi/flux/definition"

@@ -2,8 +2,8 @@ package internal
 
 import (
 	"context"
-	"flux-workflow/repository"
 	"fmt"
+	"github.com/tuxi/flux-workflow/repository"
 )
 
 // MemoryQueue implements repository.TaskQueue with an in-memory channel.

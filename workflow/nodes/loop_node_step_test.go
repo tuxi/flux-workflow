@@ -3,12 +3,12 @@ package nodes
 import (
 	"context"
 	"encoding/json"
-	"flux-workflow/domain"
-	"flux-workflow/dto"
-	"flux-workflow/eventbus"
-	"flux-workflow/repository"
-	"flux-workflow/runtimekeys"
 	"fmt"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/dto"
+	"github.com/tuxi/flux-workflow/eventbus"
+	"github.com/tuxi/flux-workflow/repository"
+	"github.com/tuxi/flux-workflow/runtimekeys"
 	"testing"
 	"time"
 
