@@ -59,6 +59,7 @@ type Server struct {
 }
 
 type Database struct {
+	Driver   string `yaml:"driver" mapstructure:"driver"` // "postgres" | "sqlite"
 	Host     string `yaml:"host" mapstructure:"host"`
 	Port     int    `yaml:"port" mapstructure:"port"`
 	User     string `yaml:"user" mapstructure:"user"`

@@ -9,6 +9,7 @@ log:
   addsource: true
 
 database:
+  driver: "postgres" # "postgres" | "sqlite" (sqlite uses dbname as file path, e.g. "./data/flux.db")
   host: "127.0.0.1"
   port: 5432
   user: "postgres"

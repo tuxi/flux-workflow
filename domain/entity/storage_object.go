@@ -55,5 +55,5 @@ type StorageObject struct {
 }
 
 func (StorageObject) TableName() string {
-	return "public.storage_objects"
+	return "storage_objects"
 }

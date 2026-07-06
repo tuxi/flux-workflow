@@ -793,9 +793,9 @@ func (r *taskRepository) ListByUserV2(
 	}
 
 	if keyword := strings.TrimSpace(req.Keyword); keyword != "" {
-		like := "%" + keyword + "%"
+		like := "%" + strings.ToLower(keyword) + "%"
 		db = db.Where(
-			"(entry_title ILIKE ? OR entry_subtitle ILIKE ? OR route_key ILIKE ? OR mode_key ILIKE ?)",
+			"(LOWER(entry_title) LIKE ? OR LOWER(entry_subtitle) LIKE ? OR LOWER(route_key) LIKE ? OR LOWER(mode_key) LIKE ?)",
 			like, like, like, like,
 		)
 	}

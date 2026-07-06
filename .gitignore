@@ -53,3 +53,8 @@ assets/
 swag-docs/
 main
 
+# SQLite database files
+*.db
+*-wal
+*-shm
+

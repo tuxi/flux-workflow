@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -46,14 +47,50 @@ func (d *defaultDatabase) CloseDB() {
 
 // connect 初始化并连接数据库
 func connect(cfg *config.Database) (*gorm.DB, error) {
+	switch cfg.Driver {
+	case "sqlite":
+		return connectSQLite(cfg)
+	default:
+		return connectPostgres(cfg)
+	}
+}
+
+func connectSQLite(cfg *config.Database) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open(cfg.DBName), &gorm.Config{})
+	if err != nil {
+		return nil, fmt.Errorf("sqlite 数据库连接失败: %w", err)
+	}
+
+	// 开启 WAL 模式，允许并发读写
+	if err := db.Exec("PRAGMA journal_mode=WAL;").Error; err != nil {
+		return nil, fmt.Errorf("sqlite 开启 WAL 模式失败: %w", err)
+	}
+	// 设置 busy timeout，避免写冲突直接报错
+	if err := db.Exec("PRAGMA busy_timeout=5000;").Error; err != nil {
+		return nil, fmt.Errorf("sqlite 设置 busy timeout 失败: %w", err)
+	}
+
+	// AutoMigrate
+	if err := db.AutoMigrate(
+		&entity.TaskModel{},
+		&entity.TaskEventModel{},
+		&entity.TaskNodeModel{},
+		&entity.TaskCostTraceModel{},
+		&entity.AwaitBindingModel{},
+		&entity.WorkflowModel{},
+		&entity.WorkflowVersionModel{},
+	); err != nil {
+		return nil, fmt.Errorf("数据库迁移失败: %w", err)
+	}
+
+	fmt.Println("✅ SQLite 数据库初始化完成")
+	return db, nil
+}
+
+func connectPostgres(cfg *config.Database) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%v sslmode=%s TimeZone=Asia/Shanghai",
 		cfg.Host, cfg.User, cfg.Password, cfg.DBName, cfg.Port, cfg.SSLMode)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		// 可以在这里关闭外键约束检查（如果迁移遇到循环依赖报错的话）
-		// DisableForeignKeyConstraintWhenMigrating: true,
-		// 建议开启日志，开发阶段能看到 SQL 语句，对复习 SQL 很有帮助
-		//Logger: logger.Default.LogMode(logger.Info),
-	})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("数据库连接失败: %w", err)
 	}
@@ -74,7 +111,6 @@ func connect(cfg *config.Database) (*gorm.DB, error) {
 		return nil, fmt.Errorf("无法加载 uuid 扩展: %w", err)
 	}
 	if err := db.Exec("CREATE EXTENSION IF NOT EXISTS vector;").Error; err != nil {
-		// 如果这里报错，说明你的 PG 镜像没安装 pgvector，面试时可以聊这个挑战
 		fmt.Println("⚠️ 警告: vector 扩展加载失败，RAG 功能将受限")
 	}
 
