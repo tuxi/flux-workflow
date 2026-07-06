@@ -1,6 +1,10 @@
 package engine
 
 import (
+	"flux-workflow/domain"
+	"flux-workflow/engine/graph"
+	"flux-workflow/workflow/nodes"
+
 	"github.com/tuxi/flux/definition"
 )
 

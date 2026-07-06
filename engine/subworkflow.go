@@ -7,9 +7,10 @@ import (
 	"flux-workflow/runtimekeys"
 	"flux-workflow/workflow/nodes"
 	"fmt"
+	"strings"
+
 	"github.com/tuxi/flux/definition"
 	"github.com/tuxi/flux/utils"
-	"strings"
 )
 
 type ParentFanoutNodeKind string

@@ -171,6 +171,35 @@ func (e *Engine) ResumeTask(
 	return result
 }
 
+// CompleteNodeAndResume 外部事件唤醒挂起任务的统一入口：
+// 用 meta 闭合 nodeName 节点（写输出、状态转 success-pending-edges），随后继续执行 DAG。
+//
+// 若该节点存在等待中的 await binding（await 节点挂起），走 CompleteAwaitNode
+// 保证 binding 状态一并闭合；否则走 async 节点的抢占式闭合 + ResumeTask。
+// 节点已被其他线程处理时返回 RunNoop，可安全重复调用。
+func (e *Engine) CompleteNodeAndResume(
+	taskID int64,
+	nodeName string,
+	meta map[string]any,
+	errMsg string,
+) RunResult {
+	if e.awaitBindingRepo != nil {
+		binding, err := e.awaitBindingRepo.GetByTaskAndNode(context.Background(), taskID, nodeName)
+		if err == nil && binding != nil && binding.Status == domain.AwaitBindingWaiting {
+			return e.CompleteAwaitNode(binding.ID, meta, errMsg, "engine.complete_node_and_resume")
+		}
+	}
+
+	ok, err := e.completeAsyncNode(taskID, nodeName, meta, errMsg)
+	if err != nil {
+		return RunResult{Status: RunFailed, Err: err}
+	}
+	if !ok {
+		return RunResult{Status: RunNoop}
+	}
+	return e.ResumeTask(taskID, nodeName, meta)
+}
+
 func (e *Engine) requeuePendingEdgesResume(ctx context.Context, taskID int64, nodeName string) {
 	if e == nil || e.taskRepo == nil || e.nodeRepo == nil {
 		return
@@ -262,7 +291,6 @@ func (e *Engine) publishResumeFinalFailed(task *domain.Task, err error, nodeName
 			"resume_node":       nodeName,
 			"last_run_status":   string(domain.TaskFailed),
 			"can_manual_resume": true,
-			"billing_action":    "refund",
 		},
 		CreatedAt: time.Now(),
 	})

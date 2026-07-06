@@ -3,7 +3,7 @@ package engine
 import (
 	"context"
 	"flux-workflow/domain"
-	"flux-workflow/websocket"
+	"flux-workflow/eventbus"
 	"flux-workflow/workflow/nodes"
 	"fmt"
 	"sort"
@@ -306,7 +306,7 @@ func (e *Engine) ReplayToWS(ctx context.Context, taskID int64, speedMs int) erro
 		return fmt.Errorf("replay ws: load events for task %d: %w", taskID, err)
 	}
 
-	ch := websocket.TaskChannel(taskID)
+	ch := eventbus.TaskChannel(taskID)
 	delay := time.Duration(speedMs) * time.Millisecond
 
 	for i := range events {

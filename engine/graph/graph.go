@@ -1,8 +1,9 @@
 package graph
 
 import (
-	"github.com/tuxi/flux/definition"
 	"fmt"
+
+	"github.com/tuxi/flux/definition"
 )
 
 // Graph DAG 的基础结构

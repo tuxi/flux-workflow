@@ -12,10 +12,25 @@ import (
 	"github.com/tuxi/flux/utils"
 )
 
+// busSub 记录一条 eventbus 订阅，Close 时逐条退订。
+type busSub struct {
+	eventType string
+	ch        <-chan *domain.TaskEvent
+}
+
+// subscribeListener 订阅事件并登记订阅记录（仅在 NewEngine 内调用，无并发）。
+func (e *Engine) subscribeListener(eventType string) <-chan *domain.TaskEvent {
+	ch := e.eventBus.Subscribe(eventType)
+	e.busSubs = append(e.busSubs, busSub{eventType: eventType, ch: ch})
+	return ch
+}
+
 // startAsyncNodeEventListener 监听node_complete_async完成的通知，用来恢复节点
 func (e *Engine) startAsyncNodeEventListener() {
-	ch := e.eventBus.Subscribe(domain.TaskEventNodeCompleteAsync)
+	ch := e.subscribeListener(domain.TaskEventNodeCompleteAsync)
+	e.listenerWG.Add(1)
 	go func() {
+		defer e.listenerWG.Done()
 		for evt := range ch {
 
 			taskID := evt.TaskID
@@ -41,9 +56,11 @@ func (e *Engine) startAsyncNodeEventListener() {
 }
 
 func (e *Engine) startSubWorkflowSuccessListener() {
-	ch := e.eventBus.Subscribe("task_succeeded")
+	ch := e.subscribeListener("task_succeeded")
 
+	e.listenerWG.Add(1)
 	go func() {
+		defer e.listenerWG.Done()
 		for evt := range ch {
 			taskID := evt.TaskID
 
@@ -112,9 +129,11 @@ func (e *Engine) startSubWorkflowSuccessListener() {
 }
 
 func (e *Engine) startSubWorkflowFailedListener() {
-	ch := e.eventBus.Subscribe("task_failed")
+	ch := e.subscribeListener("task_failed")
 
+	e.listenerWG.Add(1)
 	go func() {
+		defer e.listenerWG.Done()
 		for evt := range ch {
 			taskID := evt.TaskID
 

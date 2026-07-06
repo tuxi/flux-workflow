@@ -8,6 +8,8 @@ import (
 	"flux-workflow/domain"
 	"flux-workflow/engine/graph"
 	"flux-workflow/eventbus"
+	"flux-workflow/pkg/lock"
+	"flux-workflow/pkg/uuid"
 	"flux-workflow/repository"
 	"flux-workflow/workflow/nodes"
 	"fmt"
@@ -16,6 +18,7 @@ import (
 	"time"
 
 	workflow "flux-workflow/workflow"
+
 	"github.com/tuxi/flux/definition"
 )
 
@@ -39,6 +42,11 @@ type Engine struct {
 
 	checkpointRebuilders *checkpointRebuildRegistry
 	costRecorder         cost.Recorder
+
+	// eventbus 订阅记录，Close 时退订使监听 goroutine 退出
+	busSubs    []busSub
+	listenerWG sync.WaitGroup
+	closeOnce  sync.Once
 
 	// enableSubWorkflowBinding 控制 P1 的 subworkflow-as-await-binding 写入路径。
 	// 关闭时（默认）行为与改造前完全一致：父节点停在 NodeRunning，由 recovery_scanner 兜底。
@@ -82,10 +90,23 @@ func NewEngine(
 		costRecorder:         cost.NewDefaultRecorder(),
 	}
 
-	e.startAsyncNodeEventListener()
-	e.startSubWorkflowSuccessListener()
-	e.startSubWorkflowFailedListener()
+	if eventBus != nil {
+		e.startAsyncNodeEventListener()
+		e.startSubWorkflowSuccessListener()
+		e.startSubWorkflowFailedListener()
+	}
 	return e
+}
+
+// Close 停止引擎的事件监听 goroutine 并等待其退出。
+// 幂等；Close 之后引擎不应再执行任务。
+func (e *Engine) Close() {
+	e.closeOnce.Do(func() {
+		for _, s := range e.busSubs {
+			e.eventBus.Unsubscribe(s.eventType, s.ch)
+		}
+		e.listenerWG.Wait()
+	})
 }
 
 func (e *Engine) SetCostRecorder(recorder cost.Recorder) {

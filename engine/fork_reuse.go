@@ -7,8 +7,9 @@ import (
 	"flux-workflow/workflow"
 	"flux-workflow/workflow/nodes"
 	"fmt"
-	"github.com/tuxi/flux/definition"
 	"time"
+
+	"github.com/tuxi/flux/definition"
 )
 
 func (e *Engine) CreateForkRun(
