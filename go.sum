@@ -159,6 +159,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/tuxi/flux v1.0.3 h1:GSIyRC35uz2vo8GN99OIGM6CgGwxWMSe6gtihslfRc0=
 github.com/tuxi/flux v1.0.3/go.mod h1:kgpgU2sl4GUbFaj6TJQKWg5YjM5jNWFxvNCDCFhHXls=
+github.com/tuxi/flux v1.0.4 h1:vYWE/8CEwc/9GfmNIpGJTmjJr6iBVGlVammfKmyBsEY=
+github.com/tuxi/flux v1.0.4/go.mod h1:kgpgU2sl4GUbFaj6TJQKWg5YjM5jNWFxvNCDCFhHXls=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go/codec v1.3.1 h1:waO7eEiFDwidsBN6agj1vJQ4AG7lh2yqXyOXqhgQuyY=

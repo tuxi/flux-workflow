@@ -15,7 +15,7 @@ require (
 	github.com/sashabaranov/go-openai v1.41.2
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
-	github.com/tuxi/flux v1.0.3
+	github.com/tuxi/flux v1.0.4
 	gorm.io/datatypes v1.2.7
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/driver/sqlite v1.6.0
