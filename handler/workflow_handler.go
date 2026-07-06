@@ -8,6 +8,7 @@ import (
 	"flux-workflow/engine"
 	"flux-workflow/internal/consts"
 	"flux-workflow/pkg/response"
+	"flux-workflow/pkg/uuid"
 	"flux-workflow/service"
 	"flux-workflow/workflow"
 	"fmt"
@@ -19,7 +20,9 @@ import (
 	"time"
 
 	repository2 "flux-workflow/repository"
+	"flux-workflow/repository/query"
 	internalservice "flux-workflow/service"
+
 	"github.com/tuxi/flux/definition"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +37,7 @@ import (
 type WorkflowHandler struct {
 	workflowRepo        repository2.WorkflowRepository // 自定义接口，存 workflow 元信息
 	workflowVersionRepo repository2.WorkflowVersionRepository
-	taskRepo            repository2.TaskRepository
+	taskRepo            query.TaskQueryRepository
 	taskCostTraceRepo   repository2.TaskCostTraceRepository
 	nodeRuntimeRepo     repository2.NodeRuntimeRepository
 	eventRepo           repository2.EventRepository
@@ -56,7 +59,7 @@ type WorkflowHandler struct {
 func NewWorkflowHandler(
 	workflowRepo repository2.WorkflowRepository,
 	workflowVersionRepo repository2.WorkflowVersionRepository,
-	taskRepo repository2.TaskRepository,
+	taskRepo query.TaskQueryRepository,
 	taskCostTraceRepo repository2.TaskCostTraceRepository,
 	eventRepo repository2.EventRepository,
 	nodeRuntimeRepo repository2.NodeRuntimeRepository,

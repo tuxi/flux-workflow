@@ -19,6 +19,8 @@ import (
 
 	"flux-workflow/pkg/response"
 	repository2 "flux-workflow/repository"
+	"flux-workflow/repository/query"
+
 	"github.com/tuxi/flux/definition"
 
 	"github.com/gin-gonic/gin"
@@ -26,7 +28,7 @@ import (
 
 type RunInspectorHandler struct {
 	eng                 *engine.Engine
-	taskRepo            repository2.TaskRepository
+	taskRepo            query.TaskQueryRepository
 	nodeRuntimeRepo     repository2.NodeRuntimeRepository
 	eventRepo           repository2.EventRepository
 	awaitBindingRepo    repository2.AwaitBindingRepository
@@ -37,8 +39,8 @@ type RunInspectorHandler struct {
 }
 
 func NewRunInspectorHandler(
-	eng *engine2.Engine,
-	taskRepo repository2.TaskRepository,
+	eng *engine.Engine,
+	taskRepo query.TaskQueryRepository,
 	nodeRuntimeRepo repository2.NodeRuntimeRepository,
 	eventRepo repository2.EventRepository,
 	awaitBindingRepo repository2.AwaitBindingRepository,
