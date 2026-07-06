@@ -523,6 +523,12 @@ func (r *Runtime) DB() *gorm.DB { return r.db }
 // additional listeners beyond Subscribe.
 func (r *Runtime) EventBus() *eventbus.EventBus { return r.bus }
 
+// ToolRegistry exposes the tool registry the engine's tool nodes resolve
+// against. Register additional tools on it (they resolve lazily at node
+// execution) and share it with any service that executes tools directly, so
+// the engine and the business layer see the same tool set.
+func (r *Runtime) ToolRegistry() *tool.Registry { return r.toolReg }
+
 func statusFromEngine(s engine.RunStatus) string {
 	switch s {
 	case engine.RunSuccess:

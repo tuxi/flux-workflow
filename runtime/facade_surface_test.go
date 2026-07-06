@@ -35,6 +35,7 @@ func TestFacadeSurface_SufficientForBusinessLayer(t *testing.T) {
 	require.NotNil(t, rt.NodeRegistry(), "NodeRegistry() must be exposed")
 	require.NotNil(t, rt.DB(), "DB() must be exposed to build query repositories")
 	require.NotNil(t, rt.EventBus(), "EventBus() must be exposed")
+	require.NotNil(t, rt.ToolRegistry(), "ToolRegistry() must be shared with the business layer")
 
 	db := rt.DB()
 
