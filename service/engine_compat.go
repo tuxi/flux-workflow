@@ -5,6 +5,19 @@ import "flux-workflow/engine"
 // 以下服务是引擎能力，实现已迁移至 engine 包；
 // 这里保留类型别名，业务侧（handler/server）无需感知迁移。
 
+// 任务重试（engine/task_retry.go）
+type TaskRetryService = engine.TaskRetryService
+
+type RetryTrigger = engine.RetryTrigger
+
+const (
+	RetryTriggerManual   = engine.RetryTriggerManual
+	RetryTriggerRecovery = engine.RetryTriggerRecovery
+	TaskNoRetryFound     = engine.TaskNoRetryFound
+)
+
+var NewTaskRetryService = engine.NewTaskRetryService
+
 // redo / fork（engine/redo.go, engine/task_fork.go）
 type RunRedoService = engine.RunRedoService
 
