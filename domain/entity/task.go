@@ -21,7 +21,7 @@ type TaskEventModel struct {
 	NodeIndex int
 	NodeTotal int
 
-	Grade    string `gorm:"type:varchar(16);not null;default:'persistent'"`
+	Grade string `gorm:"type:varchar(16);not null;default:'persistent'"`
 	// Sequence is derived from the auto-increment ID column.
 	// Query uses WHERE root_task_id = ? AND id > after_sequence for per-task scoping.
 
@@ -113,13 +113,13 @@ type TaskNodeModel struct {
 	FinishedAt *time.Time
 	Error      *string `gorm:"type:text"`
 
-	LastHeartbeat     *time.Time     `gorm:"index:idx_state_heartbeat"` // 节点心跳时间, idx_state_heartbeat联合索引(state,state_heartbeat)
-	OutputJSON        datatypes.JSON `gorm:"type:jsonb"`                // 存储该节点的输出结果
-	InputHash         string         `gorm:"type:text"`                 // 存储上次执行成功时的“指纹”
-	CheckpointJSON    datatypes.JSON `gorm:"type:jsonb"`
-	Index             int
-	BizIndex          int
-	Weight            float64 `gorm:"type:float"` // 节点权重0～1
+	LastHeartbeat  *time.Time     `gorm:"index:idx_state_heartbeat"` // 节点心跳时间, idx_state_heartbeat联合索引(state,state_heartbeat)
+	OutputJSON     datatypes.JSON `gorm:"type:jsonb"`                // 存储该节点的输出结果
+	InputHash      string         `gorm:"type:text"`                 // 存储上次执行成功时的“指纹”
+	CheckpointJSON datatypes.JSON `gorm:"type:jsonb"`
+	Index          int
+	BizIndex       int
+	Weight         float64 `gorm:"type:float"` // 节点权重0～1
 
 	ActivatedEdgesJSON []byte `json:"activated_edges_json"` // 存储已经激活的边
 

@@ -1,8 +1,9 @@
 package nodes
 
 import (
-	"github.com/tuxi/flux/definition"
 	"fmt"
+
+	"github.com/tuxi/flux/definition"
 )
 
 type LoopNodeFactory struct{}

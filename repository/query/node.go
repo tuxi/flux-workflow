@@ -11,6 +11,7 @@ import (
 	"github.com/tuxi/flux/utils"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type nodeRuntimeRepository struct {
@@ -123,9 +124,11 @@ func (r *nodeRuntimeRepository) FindByTaskID(ctx context.Context, taskID int64) 
 
 	var models []entity.TaskNodeModel
 
+	// "index" 是 SQL 保留字，必须让 GORM 按方言加引号
 	err := r.db.WithContext(ctx).
 		Where("task_id = ?", taskID).
-		Order("index asc, id asc").
+		Order(clause.OrderByColumn{Column: clause.Column{Name: "index"}}).
+		Order(clause.OrderByColumn{Column: clause.Column{Name: "id"}}).
 		Find(&models).Error
 
 	if err != nil {

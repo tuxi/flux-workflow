@@ -28,7 +28,7 @@ type traceEventModel struct {
 	Seq     int64  `gorm:"not null"`       // 全局单调序列号
 	Class   uint8  `gorm:"not null"`       // runtime.TraceClass
 	Node    string // 关联节点
-	Type    string `gorm:"not null"`       // runtime.TraceType
+	Type    string `gorm:"not null"` // runtime.TraceType
 	Payload []byte // JSON-serialized payload
 }
 

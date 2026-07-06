@@ -21,7 +21,10 @@ type taskRepository struct {
 	queue repository.TaskQueue
 }
 
-func NewTaskRepository(db *gorm.DB, queue repository.TaskQueue) repository.TaskRepository {
+// NewTaskRepository 返回同时满足核心 repository.TaskRepository 与业务
+// TaskQueryRepository 的实现。核心消费方（engine/worker/runtime）按窄接口
+// 使用，业务侧（handler）可用其分页/详情查询方法。
+func NewTaskRepository(db *gorm.DB, queue repository.TaskQueue) TaskQueryRepository {
 	return &taskRepository{db: db, queue: queue}
 }
 

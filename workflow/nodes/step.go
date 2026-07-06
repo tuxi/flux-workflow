@@ -1,8 +1,9 @@
 package nodes
 
 import (
-	"github.com/tuxi/flux/tool"
 	"time"
+
+	"github.com/tuxi/flux/tool"
 )
 
 // RetryPolicy 重试机制

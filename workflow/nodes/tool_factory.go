@@ -1,9 +1,10 @@
 package nodes
 
 import (
+	"fmt"
+
 	"github.com/tuxi/flux/definition"
 	"github.com/tuxi/flux/tool"
-	"fmt"
 )
 
 type ToolFactory struct {

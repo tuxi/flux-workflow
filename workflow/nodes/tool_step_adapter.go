@@ -2,8 +2,9 @@ package nodes
 
 import (
 	"context"
-	"github.com/tuxi/flux/tool"
 	"time"
+
+	"github.com/tuxi/flux/tool"
 )
 
 // ToolStepAdapter 桥接 Tool → Step 的适配器

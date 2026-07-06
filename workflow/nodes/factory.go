@@ -1,9 +1,10 @@
 package nodes
 
 import (
+	"fmt"
+
 	"github.com/tuxi/flux/definition"
 	registry2 "github.com/tuxi/flux/tool"
-	"fmt"
 )
 
 type StepFactory interface {

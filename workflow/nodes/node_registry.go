@@ -1,10 +1,10 @@
 package nodes
 
 import (
-	"github.com/tuxi/flux/definition"
-	"github.com/tuxi/flux/tool"
 	"fmt"
 	"sync"
+
+	"github.com/tuxi/flux/definition"
 )
 
 // NodeRegistry 节点注册中心
@@ -100,16 +100,3 @@ func (r *NodeRegistry) IsExprConfigField(nodeType definition.NodeType, field str
 }
 
 var reg = NewNodeRegistry()
-
-// InitNodeRegistry creates a new NodeRegistry, registers built-in nodes
-// and all tools from the given tool.Registry, then returns the registry.
-//
-// Deprecated: use NewNodeRegistry + RegisterBuiltinNodes + explicit tool
-// node registration instead. This function uses a package-level global
-// and prevents multiple independent registries in the same process.
-func InitNodeRegistry(toolReg *tool.Registry) *NodeRegistry {
-	reg = NewNodeRegistry()
-	RegisterBuiltinNodes(reg)
-	reg.Register(NewToolFactory(toolReg), toolNodeScheme)
-	return reg
-}

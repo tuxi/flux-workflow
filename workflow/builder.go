@@ -180,11 +180,9 @@ func validateOutputMapping(mapping definition.OutputDefinition) error {
 		case reflect.String:
 			exprStr := fieldValue.String()
 
-			// ResultType 是固定值（枚举），不需要表达式编译校验，只需非空校验
+			// ResultType 是固定值（常量枚举），不参与表达式编译校验；
+			// 且对通用 DAG 工作流可选——不强制每个工作流声明媒体 result_type。
 			if fieldName == "ResultType" {
-				if exprStr == "" {
-					return fmt.Errorf("output field [ResultType] is required")
-				}
 				continue
 			}
 
