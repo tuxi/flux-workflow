@@ -38,6 +38,20 @@ func (r *WorkflowRegistry) Register(def *definition.WorkflowDefinition) {
 	r.workflows[def.Name] = def
 }
 
+// RegisterAndSync 注册工作流并立即持久化（workflow + 最新 version）。
+// 与 Register + Sync 的两段式不同，供 Runtime 门面在运行期逐个注册使用；
+// 重复注册同名工作流返回错误而非 panic。
+func (r *WorkflowRegistry) RegisterAndSync(ctx context.Context, def *definition.WorkflowDefinition) error {
+	if _, ok := r.workflows[def.Name]; ok {
+		return fmt.Errorf("workflow %s already registered", def.Name)
+	}
+	if err := r.syncWorkflow(ctx, def); err != nil {
+		return err
+	}
+	r.workflows[def.Name] = def
+	return nil
+}
+
 func (r *WorkflowRegistry) Sync(ctx context.Context) error {
 	fmt.Println("WorkflowRegistry Sync Start")
 
