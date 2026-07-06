@@ -52,6 +52,7 @@ deploy/
 assets/
 swag-docs/
 main
+.codeagent/
 
 # SQLite database files
 *.db
