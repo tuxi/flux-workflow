@@ -5,16 +5,18 @@ import (
 	"flux-workflow/adapter/postgres"
 	"flux-workflow/cost"
 	"flux-workflow/engine"
+	"flux-workflow/engine/redisjobqueue"
 	"flux-workflow/eventbus"
 	"flux-workflow/handler"
 	"flux-workflow/internal/config"
 	"flux-workflow/internal/consts"
 	"flux-workflow/pkg/llm"
-	"flux-workflow/pkg/lock"
+	"flux-workflow/pkg/lock/redislock"
 	"flux-workflow/pkg/oss"
 	"flux-workflow/registry"
 	"flux-workflow/repository"
 	"flux-workflow/repository/query"
+	"flux-workflow/repository/query/redisqueue"
 	"flux-workflow/repository/query/taskapi"
 	"flux-workflow/service"
 	"flux-workflow/websocket"
@@ -66,7 +68,7 @@ type Server struct {
 }
 
 func NewServer(db *gorm.DB, rdb *redis.Client, llmClient *llm.Client, ossClient oss.Client, cfg *config.Config) *Server {
-	queue := query.NewRedisQueue(
+	queue := redisqueue.New(
 		rdb,
 		"video_task_queue",
 		"video_task_processing",
@@ -95,7 +97,7 @@ func NewServer(db *gorm.DB, rdb *redis.Client, llmClient *llm.Client, ossClient 
 
 	wsHub := websocket.NewWSHub(websocket.NewRepositoryTaskAccessChecker(taskRepo))
 
-	jobQueue := engine.NewRedisStreamJobQueue(
+	jobQueue := redisjobqueue.New(
 		rdb,
 		"workflow_jobs",
 		"workflow_group",
@@ -175,7 +177,7 @@ func NewServer(db *gorm.DB, rdb *redis.Client, llmClient *llm.Client, ossClient 
 		toolRegistry,
 		eventBus,
 	)
-	dLocker := lock.NewRedisLock(rdb)
+	dLocker := redislock.New(rdb)
 
 	// 初始化engine
 	eng := engine.NewEngine(
@@ -269,7 +271,7 @@ func NewServer(db *gorm.DB, rdb *redis.Client, llmClient *llm.Client, ossClient 
 	go w.Loop(ctx)
 	go w.Loop(ctx)
 	go w.Loop(ctx)
-	go worker.TaskQueueRecovery(queue, ctx)
+	go redisqueue.StartRecoveryLoop(ctx, queue)
 	worker.StartAsyncWorkers(ctx, asyncWorker, 4)
 	worker.StartAwaitPollWorkers(ctx, awaitPollWorker, 1)
 	//taskBillingSettlementListener.Start(ctx, eventBus)

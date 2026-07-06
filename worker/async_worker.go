@@ -12,7 +12,6 @@ import (
 	"runtime/debug"
 	"time"
 
-	"github.com/redis/go-redis/v9"
 	"github.com/tuxi/flux/tool"
 )
 
@@ -64,7 +63,7 @@ func (w *AsyncWorker) Start(ctx context.Context, consumer string) {
 			if ctx.Err() != nil {
 				return // 上下文取消，优雅退出
 			}
-			if !errors.Is(err, redis.Nil) {
+			if !errors.Is(err, engine.ErrNoJob) {
 				log.Printf("async worker consume failed: consumer=%s err=%v", consumer, err)
 			}
 			continue

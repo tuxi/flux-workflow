@@ -8,7 +8,6 @@ import (
 	"flux-workflow/eventbus"
 	"flux-workflow/pkg/lock"
 	"flux-workflow/repository"
-	"flux-workflow/repository/query"
 	"flux-workflow/workflow"
 	"flux-workflow/workflow/nodes"
 	"fmt"
@@ -102,14 +101,6 @@ func NewWorker(
 func (w *Worker) StartRecoveryScanner(ctx context.Context) {
 	if w.scanner != nil {
 		w.scanner.Start(ctx)
-	}
-}
-
-// TaskQueueRecovery Worker 崩溃或者进程重启后
-func TaskQueueRecovery(queue *query.RedisQueue, ctx context.Context) {
-	for {
-		queue.Recover(ctx)
-		time.Sleep(30 * time.Second) // 每 30 秒检查一次
 	}
 }
 

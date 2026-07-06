@@ -1,4 +1,8 @@
-package query
+// Package redisqueue provides a Redis backed repository.TaskQueue.
+//
+// It is an optional driver kept out of the repository/query core so that
+// local/in-memory embedding does not pull in the go-redis dependency.
+package redisqueue
 
 import (
 	"context"
@@ -6,6 +10,8 @@ import (
 	"log"
 	"strconv"
 	"time"
+
+	"flux-workflow/repository"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -19,6 +25,23 @@ type RedisQueue struct {
 	timeout       time.Duration
 }
 
+var _ repository.TaskQueue = (*RedisQueue)(nil)
+
+// StartRecoveryLoop 周期性把超时未完成的任务重新推回主队列（进程重启/崩溃恢复）。
+// 阻塞运行，通常以 goroutine 启动；随 ctx 取消而退出。
+func StartRecoveryLoop(ctx context.Context, q *RedisQueue) {
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			_ = q.Recover(ctx)
+		}
+	}
+}
+
 /*
 NewRedisQueue
 使用 Redis 的 BRPOPLPUSH 或 RPOPLPUSH 模式：
@@ -30,7 +53,7 @@ NewRedisQueue
     3. 执行成功 → 从 video_task_processing 删除
     4. 执行失败 → 视重试策略可重新 push 回主队列
 */
-func NewRedisQueue(
+func New(
 	client *redis.Client,
 	queueKey,
 	processingKey,

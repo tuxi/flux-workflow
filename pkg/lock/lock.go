@@ -2,55 +2,16 @@ package lock
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"github.com/go-redsync/redsync/v4"
-	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
-	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
-// DistributedLock 分布式锁接口（适配Redis/DB）
+// DistributedLock 分布式锁接口（适配Redis/DB）。
+// Redis 实现见可选子包 pkg/lock/redislock；内存实现见 runtime/internal。
 type DistributedLock interface {
 	// Lock 抢占锁，返回：是否成功、解锁函数、错误
 	Lock(ctx context.Context, key string, timeout time.Duration) (bool, func(), error)
-}
-
-// RedisLock Redis实现（推荐生产环境用）
-type RedisLock struct {
-	rs *redsync.Redsync
-}
-
-func NewRedisLock(redisClient *redis.Client) *RedisLock {
-	pool := goredis.NewPool(redisClient)
-	return &RedisLock{
-		rs: redsync.New(pool),
-	}
-}
-
-// Lock 抢占分布式锁
-func (l *RedisLock) Lock(ctx context.Context, key string, timeout time.Duration) (bool, func(), error) {
-	mutex := l.rs.NewMutex(
-		key,
-		redsync.WithExpiry(timeout),
-		redsync.WithTries(100), // 增加到 100 次
-		redsync.WithRetryDelay(100*time.Millisecond), // 间隔缩小，反应更快
-	)
-	// 总等待能力 = 100 * 100ms = 10 秒
-
-	// 抢占锁
-	// 此时 mutex.LockContext 会阻塞直到拿到锁或重试耗尽
-	if err := mutex.LockContext(ctx); err != nil {
-		return false, nil, fmt.Errorf("lock failed: %w", err)
-	}
-
-	// 解锁函数
-	unlock := func() {
-		_, _ = mutex.UnlockContext(ctx)
-	}
-
-	return true, unlock, nil
 }
 
 // DBLock 基于DB的分布式锁（无Redis时用）
