@@ -16,11 +16,11 @@ type Option func(*Options)
 
 // Options holds all externally-provided dependencies.
 type Options struct {
-	DB     *gorm.DB
-	Queue  repository.TaskQueue
-	Lock   lock.DistributedLock
-	Bus    *eventbus.EventBus
-	JobQ   engine.AsyncJobQueue
+	DB    *gorm.DB
+	Queue repository.TaskQueue
+	Lock  lock.DistributedLock
+	Bus   *eventbus.EventBus
+	JobQ  engine.AsyncJobQueue
 
 	tools     []toolItem
 	costRec   cost.Recorder

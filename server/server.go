@@ -261,6 +261,7 @@ func NewServer(db *gorm.DB, rdb *redis.Client, llmClient *llm.Client, ossClient 
 		taskRetryService,
 	)
 
+	w.StartRecoveryScanner(ctx)
 	go w.Loop(ctx)
 	go w.Loop(ctx)
 	go w.Loop(ctx)
