@@ -284,7 +284,7 @@ func (l *LoopNodeStep) aggregateSuccessfulIteration(
 		return fmt.Errorf("loop child task is nil")
 	}
 
-	final, err := domain.ParseFinal(child.OutputJSON)
+	final, err := utils.ParseFinal(child.OutputJSON)
 	if err != nil {
 		return fmt.Errorf("loop parse child final failed: %w", err)
 	}
@@ -292,7 +292,7 @@ func (l *LoopNodeStep) aggregateSuccessfulIteration(
 		return fmt.Errorf("loop iteration %d final output is nil", runningIndex)
 	}
 
-	finalMap := taskOutputToMap(final)
+	finalMap := flattenFinalExtras(final)
 	cp := runtime.Checkpoint
 
 	// 1. append results
@@ -608,36 +608,25 @@ func shouldRecreateLoopRunningTask(reason string) bool {
 	}
 }
 
-func taskOutputToMap(out *domain.TaskOutput) map[string]any {
-	if out == nil {
-		return map[string]any{}
-	}
-
-	result := map[string]any{
-		"result_type":      out.ResultType,
-		"primary_file_url": out.PrimaryFileUrl,
-	}
-
-	if out.CoverUrl != nil {
-		result["cover_url"] = *out.CoverUrl
-	}
-	if out.PreviewUrl != nil {
-		result["preview_url"] = *out.PreviewUrl
-	}
-	if out.Width != nil {
-		result["width"] = *out.Width
-	}
-	if out.Height != nil {
-		result["height"] = *out.Height
-	}
-	if out.Duration != nil {
-		result["duration"] = *out.Duration
-	}
-
-	for k, v := range out.Extras {
+// flattenFinalExtras 把子任务 final 输出里的 extras 子对象提升到顶层、与其余
+// 字段平铺，便于 loop 结果聚合与 carry 状态按 key 直接读取。
+//
+// 通用实现：不感知任何媒体字段（result_type/primary_file_url 等），只对约定的
+// extras 扩展位做平铺；其余字段原样透传。子输出的具体形状由工作流各自的
+// OutputDefinition 决定，聚合层不作解释。
+func flattenFinalExtras(final map[string]any) map[string]any {
+	result := make(map[string]any, len(final))
+	for k, v := range final {
+		if k == "extras" {
+			continue
+		}
 		result[k] = v
 	}
-
+	if extras, ok := final["extras"].(map[string]any); ok {
+		for k, v := range extras {
+			result[k] = v
+		}
+	}
 	return result
 }
 
