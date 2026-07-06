@@ -507,11 +507,21 @@ func (r *Runtime) Shutdown() error {
 	return nil
 }
 
-// Engine exposes the underlying engine for advanced use.
+// Engine exposes the underlying engine for advanced use (replay, redo, cancel,
+// fork, and other power-user operations that are intentionally not on the facade).
 func (r *Runtime) Engine() *engine.Engine { return r.eng }
 
 // NodeRegistry exposes the node registry for registering custom node types.
 func (r *Runtime) NodeRegistry() *nodes.NodeRegistry { return r.nodeReg }
+
+// DB exposes the underlying *gorm.DB. With it a consumer can construct any
+// query repository (via repository/query) or run its own read-side queries —
+// the primary extension point for building a business/HTTP layer on top.
+func (r *Runtime) DB() *gorm.DB { return r.db }
+
+// EventBus exposes the event bus, for publishing custom events or attaching
+// additional listeners beyond Subscribe.
+func (r *Runtime) EventBus() *eventbus.EventBus { return r.bus }
 
 func statusFromEngine(s engine.RunStatus) string {
 	switch s {

@@ -102,6 +102,21 @@ rt.Start(ctx,
 )
 ```
 
+### Building a service layer on top
+
+The facade covers the common path. To build your own HTTP/service layer, reach
+the underlying handles and use the core packages directly:
+
+```go
+db  := rt.DB()            // *gorm.DB — construct any query repo from repository/query
+bus := rt.EventBus()      // publish custom events / attach listeners
+eng := rt.Engine()        // power-user ops: Replay, Redo, Cancel, Fork, ...
+reg := rt.NodeRegistry()  // register custom node types
+```
+
+The `runtime` facade is deliberately thin: advanced operations stay on the core
+packages (`engine`, `repository`, `eventbus`) rather than being mirrored here.
+
 ### Human-in-the-loop
 
 An `await` node suspends the task. When the external event arrives, resume it:
