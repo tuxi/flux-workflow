@@ -3,10 +3,12 @@ package repository
 import (
 	"context"
 	"flux-workflow/domain"
-	"flux-workflow/dto"
 	"time"
 )
 
+// TaskRepository 是引擎运行时依赖的任务存储接口，只涉及 domain 类型，
+// 不引入任何面向 HTTP/API 的展示层（dto）依赖。面向业务的分页/详情查询
+// 见 repository/query.TaskQueryRepository。
 type TaskRepository interface {
 	Create(ctx context.Context, task *domain.Task) error
 	GetByID(ctx context.Context, id int64) (*domain.Task, error)
@@ -16,7 +18,6 @@ type TaskRepository interface {
 	FindRunningRootTasks(ctx context.Context, before time.Time) ([]*domain.Task, error)
 
 	FindByWorkflowID(ctx context.Context, workflowID int64) ([]*domain.Task, error)
-	ListByUser(ctx context.Context, userID int64, params dto.PageRequest) ([]*domain.Task, int64, error)
 	ListChildrenByParentID(ctx context.Context, parentID int64) ([]*domain.Task, error)
 
 	// 批量更新更高效
@@ -33,19 +34,10 @@ type TaskRepository interface {
 
 	CreateFork(ctx context.Context, source *domain.Task, newTaskID int64, newInput []byte, editAction, editLabel string) (*domain.Task, error)
 
-	// 轻量列表查询
-	ListByUserV2(
-		ctx context.Context,
-		userID int64,
-		req dto.TaskListReq,
-	) ([]*dto.Task, int64, error)
-
-	// 发布详情仍然取完整 task，但要求只能取 root task
+	// 发布详情仍然取完整 task，但要求只能取 root task。返回 domain 类型，无 dto 依赖。
 	GetRootTaskByIDAndUser(
 		ctx context.Context,
 		taskID int64,
 		userID int64,
 	) (*domain.Task, error)
-
-	GetTaskDetail(ctx context.Context, taskID int64) (*dto.TaskDetail, error)
 }

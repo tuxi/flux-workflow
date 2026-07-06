@@ -42,10 +42,8 @@ const (
 	TaskEventSucceeded          = "task_succeeded"
 	TaskEventFailed             = "task_failed"
 	TaskEventSuspended          = "task_suspended"
-	TaskEventFinalFailed        = "task_final_failed"
-	TaskEventNodeCompleteAsync  = "node_complete_async"
-	TaskEventPointsRefunded     = "task_points_refunded"
-	TaskEventPointsRefundFailed = "task_points_refund_failed"
+	TaskEventFinalFailed       = "task_final_failed"
+	TaskEventNodeCompleteAsync = "node_complete_async"
 )
 
 type TaskStatus string
@@ -128,17 +126,22 @@ type Task struct {
 //	return t.MapIndex != nil
 //}
 
-// TaskOutput 最终结果层 (给客户端的 final Response)
+// TaskOutput 最终结果层（给客户端的 final Response）。
+//
+// 该结构结构性地对应工作流 DSL 的 definition.OutputDefinition：
+// 引擎按 OutputDefinition 的字段把节点输出物化到这里，两者字段一一对应。
+// 不再内嵌任何业务展示类型——「创意详情/时间轴」等派生视图已在 v1.0.4 起
+// 收敛为 definition.OutputSlices，由业务 Service 从 task_nodes 按需再生，
+// 不属于核心输出契约。
 type TaskOutput struct {
-	ResultType     string          `json:"result_type"`
-	PrimaryFileUrl string          `json:"primary_file_url"`
-	CoverUrl       *string         `json:"cover_url,omitempty"`
-	PreviewUrl     *string         `json:"preview_url,omitempty"`
-	Width          *int64          `json:"width,omitempty"`           // 像素用整数
-	Height         *int64          `json:"height,omitempty"`          // 像素用整数
-	Duration       *float64        `json:"duration,omitempty"`        // 时长用浮点数（秒）
-	Extras         map[string]any  `json:"extras,omitempty"`          // 扩展
-	CreativeDetail *CreativeDetail `json:"creative_detail,omitempty"` // 创意详情
+	ResultType     string         `json:"result_type"`
+	PrimaryFileUrl string         `json:"primary_file_url"`
+	CoverUrl       *string        `json:"cover_url,omitempty"`
+	PreviewUrl     *string        `json:"preview_url,omitempty"`
+	Width          *int64         `json:"width,omitempty"`    // 像素用整数
+	Height         *int64         `json:"height,omitempty"`   // 像素用整数
+	Duration       *float64       `json:"duration,omitempty"` // 时长用浮点数（秒）
+	Extras         map[string]any `json:"extras,omitempty"`   // 扩展
 }
 
 func ParseFinal(outputJSON []byte) (*TaskOutput, error) {
@@ -225,11 +228,6 @@ func mapOldVersionToNew(data map[string]any) *TaskOutput {
 	// 默认 PreviewUrl 等于 PrimaryFileUrl (客户端兼容逻辑)
 	out.PreviewUrl = &primary
 
-	//if d, ok := data["creative_detail"]; ok {
-	//	creativeDetail, _ := ParseCreativeDetail(d)
-	//	out.CreativeDetail = creativeDetail
-	//}
-
 	// 处理数字类型（防止从 JSON 解析出来是 float64）
 	if w, ok := data["width"]; ok {
 		val := int64(asFloat(w))
@@ -314,28 +312,6 @@ func hasVideoExtension(url string) bool {
 	}
 	return false
 }
-
-//func ParseCreativeDetail(d any) (*CreativeDetail, error) {
-//	var creativeDetail CreativeDetail
-//	switch d.(type) {
-//	case map[string]interface{}:
-//		bytes, err := json.Marshal(d)
-//		if err != nil {
-//			return nil, err
-//		}
-//		err = json.Unmarshal(bytes, &creativeDetail)
-//		if err != nil {
-//			return nil, err
-//		}
-//	case CreativeDetail:
-//		creativeDetail = d.(CreativeDetail)
-//	case *CreativeDetail:
-//		if d, ok := d.(*CreativeDetail); ok {
-//			creativeDetail = *d
-//		}
-//	}
-//	return &creativeDetail, nil
-//}
 
 func asFloat(v any) float64 {
 	switch n := v.(type) {
