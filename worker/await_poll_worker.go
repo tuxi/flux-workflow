@@ -5,6 +5,7 @@ import (
 	"flux-workflow/domain"
 	"flux-workflow/engine"
 	"flux-workflow/eventbus"
+	"flux-workflow/pkg/lock"
 	"flux-workflow/repository"
 	"fmt"
 	"strings"

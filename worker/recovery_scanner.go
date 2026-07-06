@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"flux-workflow/domain"
+	"flux-workflow/engine"
 	"flux-workflow/eventbus"
 	"flux-workflow/repository"
-	"flux-workflow/service"
 	"log"
 	"strings"
 	"time"
@@ -26,7 +26,7 @@ import (
 type RecoveryScanner struct {
 	taskRepo     repository.TaskRepository
 	nodeRepo     repository.NodeRuntimeRepository
-	retryService service.TaskRetryService
+	retryService engine.TaskRetryService
 	eventBus     *eventbus.EventBus
 	interval     time.Duration /// 每 30 秒扫一次
 	timeout      time.Duration // 心跳超过 多少 分钟没更新才算 crash
@@ -35,7 +35,7 @@ type RecoveryScanner struct {
 func NewRecoveryScanner(
 	taskRepo repository.TaskRepository,
 	nodeRepo repository.NodeRuntimeRepository,
-	retryService service.TaskRetryService,
+	retryService engine.TaskRetryService,
 	eventBus *eventbus.EventBus,
 	interval time.Duration,
 	timeout time.Duration,
@@ -127,7 +127,7 @@ func (r *RecoveryScanner) scan(ctx context.Context) {
 		if err := r.retryService.PrepareTaskRetry(
 			ctx,
 			task.ID,
-			service.RetryTriggerRecovery,
+			engine.RetryTriggerRecovery,
 			"",
 			nil,
 		); err != nil {

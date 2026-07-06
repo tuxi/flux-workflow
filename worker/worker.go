@@ -6,9 +6,9 @@ import (
 	"flux-workflow/domain"
 	"flux-workflow/engine"
 	"flux-workflow/eventbus"
+	"flux-workflow/pkg/lock"
 	"flux-workflow/repository"
 	"flux-workflow/repository/query"
-	"flux-workflow/service"
 	"flux-workflow/workflow"
 	"flux-workflow/workflow/nodes"
 	"fmt"
@@ -45,14 +45,14 @@ type Worker struct {
 	queue repository.TaskQueue
 	// 注册节点系统
 	nodeRegistry *nodes.NodeRegistry
-	scanner      RecoveryScanner
+	scanner      *RecoveryScanner
 	// 节点任务队列
 	asyncJobQueue engine.AsyncJobQueue
 	eventBus      *eventbus.EventBus
 	builder       *workflow.Builder
 	workerID      string
 
-	taskRetryService service.TaskRetryService
+	taskRetryService engine.TaskRetryService
 
 	dLocker lock.DistributedLock // 分布式锁
 }
@@ -71,11 +71,10 @@ func NewWorker(
 	nodeRegistry *nodes.NodeRegistry,
 	dLocker lock.DistributedLock,
 	builder *workflow.Builder,
-	taskRetryService service.TaskRetryService,
+	taskRetryService engine.TaskRetryService,
 ) *Worker {
 
 	scanner := NewRecoveryScanner(taskRepo, nodeRunTimeRepo, taskRetryService, eventBus, 30*time.Second, 2*time.Minute)
-	scanner.Start(context.Background())
 
 	w := &Worker{
 		eng:                 eng,
@@ -92,9 +91,18 @@ func NewWorker(
 		dLocker:             dLocker,
 		builder:             builder,
 		taskRetryService:    taskRetryService,
+		scanner:             scanner,
 	}
 
 	return w
+}
+
+// StartRecoveryScanner 启动数据库级恢复扫描器（后台 goroutine，ctx 取消时退出）。
+// 由调用方显式启动，NewWorker 不再隐式拉起。
+func (w *Worker) StartRecoveryScanner(ctx context.Context) {
+	if w.scanner != nil {
+		w.scanner.Start(ctx)
+	}
 }
 
 // TaskQueueRecovery Worker 崩溃或者进程重启后
@@ -110,6 +118,9 @@ func (w *Worker) Loop(ctx context.Context) {
 		// 从缓存队列中查找待执行的任务
 		taskID, err := w.queue.PopAndReserve(ctx)
 		if err != nil {
+			if ctx.Err() != nil {
+				return // 上下文取消，优雅退出
+			}
 			time.Sleep(time.Second)
 			continue
 		}
@@ -188,7 +199,7 @@ func (w *Worker) handle(parentCtx context.Context, task *domain.Task) {
 	}
 
 	if w.taskRetryService != nil {
-		if retryErr := w.taskRetryService.PrepareTaskRetry(parentCtx, taskID, service.RetryTriggerRecovery, "", nil); retryErr != nil {
+		if retryErr := w.taskRetryService.PrepareTaskRetry(parentCtx, taskID, engine.RetryTriggerRecovery, "", nil); retryErr != nil {
 			log.Printf("worker prepare retry failed: task=%d retry_count=%d err=%v", taskID, task.RetryCount, retryErr)
 			w.failTask(parentCtx, task, retryErr.Error(), "retry_prepare_failed", "worker.prepare_retry")
 			return
@@ -238,7 +249,6 @@ func (w *Worker) publishFinalFailed(task *domain.Task, reason string, finalReaso
 			"source":            source,
 			"last_run_status":   string(domain.TaskFailed),
 			"can_manual_resume": true,
-			"billing_action":    "refund",
 		},
 		CreatedAt: time.Now(),
 	})

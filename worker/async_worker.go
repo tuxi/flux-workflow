@@ -61,6 +61,9 @@ func (w *AsyncWorker) Start(ctx context.Context, consumer string) {
 
 		job, msgID, err := w.queue.Consume(ctx, "workflow_group", consumer)
 		if err != nil {
+			if ctx.Err() != nil {
+				return // 上下文取消，优雅退出
+			}
 			if !errors.Is(err, redis.Nil) {
 				log.Printf("async worker consume failed: consumer=%s err=%v", consumer, err)
 			}
