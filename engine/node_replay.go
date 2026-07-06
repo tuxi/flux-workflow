@@ -1,10 +1,9 @@
-package service
+package engine
 
 import (
 	"context"
 	"encoding/json"
 	"flux-workflow/domain"
-	"flux-workflow/engine"
 	"flux-workflow/repository"
 	"fmt"
 	"strings"
@@ -35,7 +34,7 @@ type nodeReplayService struct {
 	taskRepo            repository.TaskRepository
 	nodeRuntimeRepo     repository.NodeRuntimeRepository
 	workflowVersionRepo repository.WorkflowVersionRepository
-	replayEngine        *engine.Engine
+	replayEngine        *Engine
 	toolRegistry        *tool.Registry
 }
 
@@ -43,7 +42,7 @@ func NewNodeReplayService(
 	taskRepo repository.TaskRepository,
 	nodeRuntimeRepo repository.NodeRuntimeRepository,
 	workflowVersionRepo repository.WorkflowVersionRepository,
-	replayEngine *engine.Engine,
+	replayEngine *Engine,
 	toolRegistry *tool.Registry,
 ) NodeReplayService {
 	return &nodeReplayService{
@@ -137,7 +136,7 @@ func (s *nodeReplayService) ReplayTaskNode(ctx context.Context, taskID int64, no
 		RootID:   task.RootID,
 		NodeName: nodeName,
 	})
-	replayOutput, replayErr := t.Execute(execCtx, cloneMap(frame.ResolvedInput), noopToolEmitter{})
+	replayOutput, replayErr := t.Execute(execCtx, cloneMap(frame.ResolvedInput), nodeReplayNoopEmitter{})
 	if replayErr != nil {
 		result.ReplayError = replayErr.Error()
 		return result, nil
@@ -182,7 +181,7 @@ func isNodeReplayAllowedState(state domain.NodeState) bool {
 	}
 }
 
-func findReplayFrame(trace *engine.ReplayTrace, nodeName string) *engine.NodeTraceFrame {
+func findReplayFrame(trace *ReplayTrace, nodeName string) *NodeTraceFrame {
 	if trace == nil {
 		return nil
 	}
@@ -215,3 +214,8 @@ func cloneMap(in map[string]any) map[string]any {
 	}
 	return out
 }
+
+// nodeReplayNoopEmitter 回放执行工具时丢弃流式事件。
+type nodeReplayNoopEmitter struct{}
+
+func (nodeReplayNoopEmitter) EmitToolEvent(event tool.ToolEvent) {}

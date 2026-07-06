@@ -1,13 +1,14 @@
-package service
+package engine
 
 import (
 	"context"
 	"encoding/json"
 	"flux-workflow/domain"
-	"flux-workflow/engine"
+	"flux-workflow/pkg/uuid"
 	"flux-workflow/repository"
 	"flux-workflow/workflow"
 	"fmt"
+
 	"github.com/tuxi/flux/definition"
 )
 
@@ -15,7 +16,7 @@ type TaskForkService struct {
 	taskRepo            repository.TaskRepository
 	workflowVersionRepo repository.WorkflowVersionRepository
 	builder             *workflow.Builder
-	eng                 *engine.Engine
+	eng                 *Engine
 	idGen               uuid.SnowNode
 }
 
@@ -23,7 +24,7 @@ func NewTaskForkService(
 	taskRepo repository.TaskRepository,
 	workflowVersionRepo repository.WorkflowVersionRepository,
 	builder *workflow.Builder,
-	eng *engine.Engine,
+	eng *Engine,
 ) *TaskForkService {
 	return &TaskForkService{
 		taskRepo:            taskRepo,
@@ -59,7 +60,7 @@ func (s *TaskForkService) RedoRun(
 	}
 
 	// 2. 合并 input
-	newInput := parseTaskInput(sourceTask.InputJSON)
+	newInput := parseTaskInputOrEmpty(sourceTask.InputJSON)
 	if newInput == nil {
 		newInput = map[string]any{}
 	}
@@ -149,7 +150,7 @@ func (s *TaskForkService) RedoRun(
 	return newTask, nil
 }
 
-func parseTaskInput(inputJSON []byte) map[string]any {
+func parseTaskInputOrEmpty(inputJSON []byte) map[string]any {
 	if len(inputJSON) == 0 {
 		return map[string]any{}
 	}

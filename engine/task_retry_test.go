@@ -1,4 +1,4 @@
-package service
+package engine
 
 import (
 	"context"
@@ -321,10 +321,6 @@ func TestReviveProtectedChildrenForRetry_RequeuesPendingMapChild(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, []int64{10}, repo.enqueued)
 	require.Equal(t, domain.TaskPending, repo.tasks[0].Status)
-}
-
-func intPtr(v int) *int {
-	return &v
 }
 
 func mustRetryJSON(t *testing.T, value any) []byte {

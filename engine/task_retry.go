@@ -1,11 +1,11 @@
-package service
+package engine
 
 import (
 	"context"
 	"encoding/json"
 	"flux-workflow/domain"
-	"flux-workflow/engine"
 	"flux-workflow/repository"
+	"flux-workflow/utils"
 	"flux-workflow/workflow"
 	"fmt"
 	"strconv"
@@ -134,9 +134,9 @@ func (s *taskRetryService) PrepareTaskRetry(
 			return fmt.Errorf("resume_from node has no runtime: %s", resumeFrom)
 		}
 		// 状态闭合校验：从指定节点 resume 时，父状态必须可恢复
-		if vr := engine.ValidateParentStateClosure(runtimeMap, wf.Graph(), engine.ClosureModeResume); !vr.Valid {
+		if vr := ValidateParentStateClosure(runtimeMap, wf.Graph(), ClosureModeResume); !vr.Valid {
 			for _, issue := range vr.Issues {
-				if issue.Level == engine.ClosureLevelBlock {
+				if issue.Level == ClosureLevelBlock {
 					return fmt.Errorf("parent state not closed: %s", issue.Message)
 				}
 			}
@@ -771,15 +771,15 @@ func (s *taskRetryService) applyPatchesToNodeRuntimes(
 		}
 		switch p.Op {
 		case domain.PatchOpSet:
-			if err := engine.SetByPath(rt.Output, p.Path, p.Value); err != nil {
+			if err := SetByPath(rt.Output, p.Path, p.Value); err != nil {
 				return fmt.Errorf("apply patch set node=%s path=%s: %w", p.Node, p.Path, err)
 			}
 		case domain.PatchOpDelete:
-			if err := engine.DeleteByPath(rt.Output, p.Path); err != nil {
+			if err := DeleteByPath(rt.Output, p.Path); err != nil {
 				return fmt.Errorf("apply patch delete node=%s path=%s: %w", p.Node, p.Path, err)
 			}
 		case domain.PatchOpMerge:
-			if err := engine.MergeByPath(rt.Output, p.Path, p.Value); err != nil {
+			if err := MergeByPath(rt.Output, p.Path, p.Value); err != nil {
 				return fmt.Errorf("apply patch merge node=%s path=%s: %w", p.Node, p.Path, err)
 			}
 		default:
