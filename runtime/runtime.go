@@ -529,6 +529,8 @@ func (r *Runtime) EventBus() *eventbus.EventBus { return r.bus }
 // the engine and the business layer see the same tool set.
 func (r *Runtime) ToolRegistry() *tool.Registry { return r.toolReg }
 
+func (r *Runtime) WorkflowRegistry() *registry.WorkflowRegistry { return r.wfReg }
+
 func statusFromEngine(s engine.RunStatus) string {
 	switch s {
 	case engine.RunSuccess:
