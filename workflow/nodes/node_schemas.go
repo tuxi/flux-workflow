@@ -5,7 +5,7 @@ import (
 	"github.com/tuxi/flux/tool"
 )
 
-var startNodeScheme = &NodeTypeSchema{
+var StartNodeSchema = &NodeTypeSchema{
 	Type:        definition.NodeStart,
 	Description: "Start Node",
 	ConfigSchema: tool.DataSchema{
@@ -13,7 +13,7 @@ var startNodeScheme = &NodeTypeSchema{
 	},
 }
 
-var endNodeScheme = &NodeTypeSchema{
+var EndNodeSchema = &NodeTypeSchema{
 	Type:        definition.NodeEnd,
 	Description: "End Node",
 	ConfigSchema: tool.DataSchema{
@@ -21,7 +21,7 @@ var endNodeScheme = &NodeTypeSchema{
 	},
 }
 
-var toolNodeScheme = &NodeTypeSchema{
+var ToolNodeSchema = &NodeTypeSchema{
 	Type:        definition.NodeTool,
 	Description: "Tool execution node",
 	ConfigSchema: tool.DataSchema{

@@ -101,18 +101,15 @@ func (r *NodeRegistry) IsExprConfigField(nodeType definition.NodeType, field str
 
 var reg = NewNodeRegistry()
 
-// InitNodeRegistry NodeRegistry初始化（系统启动）
+// InitNodeRegistry creates a new NodeRegistry, registers built-in nodes
+// and all tools from the given tool.Registry, then returns the registry.
+//
+// Deprecated: use NewNodeRegistry + RegisterBuiltinNodes + explicit tool
+// node registration instead. This function uses a package-level global
+// and prevents multiple independent registries in the same process.
 func InitNodeRegistry(toolReg *tool.Registry) *NodeRegistry {
 	reg = NewNodeRegistry()
-
-	reg.Register(NewStartNodeFactory(), startNodeScheme)
-	reg.Register(NewEndNodeFactory(), endNodeScheme)
-	reg.Register(NewSubWorkflowNodeFactory(), SubWorkflowNodeSchema)
-	reg.Register(NewMapNodeFactory(), MapNodeSchema)
-	reg.Register(NewLoopNodeFactory(), LoopNodeSchema)
-	reg.Register(NewAwaitNodeFactory(), AwaitNodeSchema)
-
+	RegisterBuiltinNodes(reg)
 	reg.Register(NewToolFactory(toolReg), toolNodeScheme)
-
 	return reg
 }
