@@ -3,9 +3,10 @@ package engine
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"strings"
 
 	"time"
 
@@ -36,7 +37,7 @@ func (e *Engine) startAsyncNodeEventListener() {
 			taskID := evt.TaskID
 			nodeName := evt.Step
 
-			fmt.Println("receive node_complete_async event", taskID, nodeName)
+			fmt.Println("[flux-workflow] receive node_complete_async event", taskID, nodeName)
 
 			// 只有抢占成功的线程才能进入下一步
 			ok, err := e.completeAsyncNode(evt.TaskID, evt.Step, evt.Meta, evt.Error)
@@ -48,7 +49,7 @@ func (e *Engine) startAsyncNodeEventListener() {
 			result := e.ResumeTask(taskID, nodeName, evt.Meta)
 			switch result.Status {
 			case RunFailed:
-				fmt.Println("resume error:", result.Err)
+				fmt.Println("[flux-workflow] resume error:", result.Err)
 			}
 		}
 
@@ -66,7 +67,7 @@ func (e *Engine) startSubWorkflowSuccessListener() {
 
 			evtCtx, err := e.loadChildEventContext(taskID)
 			if err != nil {
-				fmt.Printf("loadChildEventContext failed: child=%d err=%v\n", taskID, err)
+				fmt.Printf("[flux-workflow] loadChildEventContext failed: child=%d err=%v\n", taskID, err)
 				continue
 			}
 			if evtCtx == nil {
@@ -80,11 +81,11 @@ func (e *Engine) startSubWorkflowSuccessListener() {
 
 			accept, err := e.canAcceptChildResult(parentID, parentNode, child)
 			if err != nil {
-				fmt.Printf("canAcceptChildResult failed: child=%d parent=%d node=%s err=%v\n", child.ID, parentID, parentNode, err)
+				fmt.Printf("[flux-workflow] canAcceptChildResult failed: child=%d parent=%d node=%s err=%v\n", child.ID, parentID, parentNode, err)
 				continue
 			}
 			if !accept {
-				fmt.Printf("ignore stale child success event: child=%d parent=%d node=%s\n", child.ID, parentID, parentNode)
+				fmt.Printf("[flux-workflow] ignore stale child success event: child=%d parent=%d node=%s\n", child.ID, parentID, parentNode)
 				continue
 			}
 
@@ -100,7 +101,7 @@ func (e *Engine) startSubWorkflowSuccessListener() {
 				e.publishSubWorkflowFanoutProgress(child, parentID, parentNode, 1, 0, 0)
 				final, err := e.parseChildFinal(child)
 				if err != nil {
-					fmt.Printf("parse child final failed: child=%d err=%v\n", child.ID, err)
+					fmt.Printf("[flux-workflow] parse child final failed: child=%d err=%v\n", child.ID, err)
 					continue
 				}
 
@@ -120,7 +121,7 @@ func (e *Engine) startSubWorkflowSuccessListener() {
 				continue
 
 			default:
-				fmt.Printf("unknown parent fanout kind: child=%d parent=%d node=%s kind=%s\n",
+				fmt.Printf("[flux-workflow] unknown parent fanout kind: child=%d parent=%d node=%s kind=%s\n",
 					child.ID, parentID, parentNode, kind)
 				continue
 			}
@@ -139,7 +140,7 @@ func (e *Engine) startSubWorkflowFailedListener() {
 
 			evtCtx, err := e.loadChildEventContext(taskID)
 			if err != nil {
-				fmt.Printf("loadChildEventContext failed: child=%d err=%v\n", taskID, err)
+				fmt.Printf("[flux-workflow] loadChildEventContext failed: child=%d err=%v\n", taskID, err)
 				continue
 			}
 			if evtCtx == nil {
@@ -153,11 +154,11 @@ func (e *Engine) startSubWorkflowFailedListener() {
 
 			accept, err := e.canAcceptChildResult(parentID, parentNode, child)
 			if err != nil {
-				fmt.Printf("canAcceptChildResult failed: child=%d parent=%d node=%s err=%v\n", child.ID, parentID, parentNode, err)
+				fmt.Printf("[flux-workflow] canAcceptChildResult failed: child=%d parent=%d node=%s err=%v\n", child.ID, parentID, parentNode, err)
 				continue
 			}
 			if !accept {
-				fmt.Printf("ignore stale child failed event: child=%d parent=%d node=%s\n", child.ID, parentID, parentNode)
+				fmt.Printf("[flux-workflow] ignore stale child failed event: child=%d parent=%d node=%s\n", child.ID, parentID, parentNode)
 				continue
 			}
 
@@ -193,7 +194,7 @@ func (e *Engine) startSubWorkflowFailedListener() {
 				continue
 
 			default:
-				fmt.Printf("unknown parent fanout kind on failed listener: child=%d parent=%d node=%s kind=%s\n",
+				fmt.Printf("[flux-workflow] unknown parent fanout kind on failed listener: child=%d parent=%d node=%s kind=%s\n",
 					child.ID, parentID, parentNode, kind)
 				continue
 			}
@@ -217,7 +218,7 @@ func (e *Engine) completeAsyncNode(
 
 	if !ok {
 		// 抢占失败，说明别的线程已经处理过这个节点了
-		fmt.Printf("Node %s for Task %d already completed by another thread, skipping resume\n", nodeName, taskID)
+		fmt.Printf("[flux-workflow] Node %s for Task %d already completed by another thread, skipping resume\n", nodeName, taskID)
 		return false, nil
 	}
 
@@ -316,7 +317,7 @@ func (e *Engine) canAcceptChildResult(
 			return false, err
 		}
 		if !ok {
-			fmt.Printf("reject loop child event by binding mismatch: child=%d parent=%d node=%s\n",
+			fmt.Printf("[flux-workflow] reject loop child event by binding mismatch: child=%d parent=%d node=%s\n",
 				child.ID, parentID, parentNodeName)
 			return false, nil
 		}
@@ -390,7 +391,7 @@ func asInt(v any) int {
 func (e *Engine) resumeParentTask(parentID int64, parentNode string, meta map[string]any) {
 	result := e.ResumeTask(parentID, parentNode, meta)
 	if result.Status == RunFailed {
-		fmt.Printf("resume parent task failed: parentID=%d parentNode=%s err=%v\n", parentID, parentNode, result.Err)
+		fmt.Printf("[flux-workflow] resume parent task failed: parentID=%d parentNode=%s err=%v\n", parentID, parentNode, result.Err)
 	}
 }
 
@@ -462,7 +463,7 @@ func (e *Engine) completeAndResumeParent(
 ) {
 	ok, err := e.completeAsyncNode(parentID, parentNode, output, errMsg)
 	if err != nil {
-		fmt.Printf("completeAsyncNode failed: parentID=%d parentNode=%s err=%v\n", parentID, parentNode, err)
+		fmt.Printf("[flux-workflow] completeAsyncNode failed: parentID=%d parentNode=%s err=%v\n", parentID, parentNode, err)
 		return
 	}
 	if !ok {

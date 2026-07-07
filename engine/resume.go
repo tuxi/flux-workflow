@@ -3,9 +3,10 @@ package engine
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/workflow"
-	"time"
 )
 
 // ResumeTask 恢复 Workflow 任务执行
@@ -25,21 +26,21 @@ func (e *Engine) ResumeTask(
 	start := time.Now()
 	locked, unlock, err := e.dLocker.Lock(lockCtx, lockKey, 2*time.Minute)
 	if waitTime := time.Since(start); waitTime > time.Second {
-		fmt.Printf("⚠️ 锁竞争激烈: lockKey=%s, 等待了=%v\n", lockKey, waitTime)
+		fmt.Printf("[flux-workflow]  锁竞争激烈: lockKey=%s, 等待了=%v\n", lockKey, waitTime)
 	}
-	fmt.Println("Engine.ResumeTask:抢占锁, lockKey:", lockKey)
+	fmt.Println("[flux-workflow] Engine.ResumeTask:抢占锁, lockKey:\n", lockKey)
 	if err != nil {
 		// 如果获取锁2分钟内还是没有取到锁，则把任务放到队列中等待重新调度
 		go func() { // 延迟几秒加入队列，确保下次能跑
 			time.Sleep(3 * time.Second)
 			e.requeuePendingEdgesResume(context.Background(), taskID, nodeName)
 		}()
-		fmt.Println("Engine.ResumeTask:抢占锁失败, lockKey:，error:", lockKey, err.Error())
+		fmt.Println("[flux-workflow] Engine.ResumeTask:抢占锁失败, lockKey:，error:\n", lockKey, err.Error())
 		return RunResult{Status: RunNoop}
 	}
 	defer func() {
 		if unlock != nil {
-			fmt.Println("Engine.ResumeTask:释放锁, lockKey:", lockKey)
+			fmt.Println("[flux-workflow] Engine.ResumeTask:释放锁, lockKey:", lockKey)
 			unlock()
 		}
 	}()
@@ -73,7 +74,7 @@ func (e *Engine) ResumeTask(
 		nodeRuntime.State == domain.NodeFailed ||
 		nodeRuntime.State == domain.NodeSkipped ||
 		nodeRuntime.State == domain.NodeCanceled {
-		fmt.Printf("Task %d Node %s already processed (state: %s), skip\n", taskID, nodeName, nodeRuntime.State)
+		fmt.Printf("[flux-workflow] Task %d Node %s already processed (state: %s), skip\n", taskID, nodeName, nodeRuntime.State)
 		return RunResult{Status: RunNoop}
 	}
 

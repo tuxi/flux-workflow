@@ -4,6 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/engine"
 	"github.com/tuxi/flux-workflow/eventbus"
@@ -11,8 +14,6 @@ import (
 	"github.com/tuxi/flux-workflow/repository"
 	"github.com/tuxi/flux-workflow/workflow"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"log"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/tuxi/flux-workflow/definition"
@@ -119,7 +120,7 @@ func (w *Worker) Loop(ctx context.Context) {
 		// 抢占任务
 		ok, err := w.taskRepo.TryClaimTask(ctx, taskID, w.workerID)
 		if err != nil {
-			log.Println("task already claimed:", taskID)
+			log.Println("[flux-workflow] task already claimed:", taskID)
 			continue
 		}
 		if !ok {
@@ -130,13 +131,13 @@ func (w *Worker) Loop(ctx context.Context) {
 
 		task, err := w.taskRepo.GetByID(ctx, taskID)
 		if err != nil || task == nil || task.Status == domain.TaskCanceled {
-			log.Printf("worker load claimed task failed or task canceled: task=%d err=%v task_nil=%v", taskID, err, task == nil)
+			log.Printf("[flux-workflow] worker load claimed task failed or task canceled: task=%d err=%v task_nil=%v\n", taskID, err, task == nil)
 			// 直接 ACK，丢弃任务
 			w.queue.Ack(ctx, taskID)
 			continue
 		}
 
-		log.Println("worker start task:", taskID)
+		log.Println("[flux-workflow] worker start task:\n", taskID)
 
 		w.handle(ctx, task)
 	}
@@ -149,20 +150,20 @@ func (w *Worker) handle(parentCtx context.Context, task *domain.Task) {
 
 	dbVersion, err := w.workflowVersionRepo.Get(ctxTimeout, task.WorkflowVersionID)
 	if err != nil {
-		log.Printf("worker load workflow version failed: task=%d workflow_version_id=%d err=%v", task.ID, task.WorkflowVersionID, err)
+		log.Printf("[flux-workflow] worker load workflow version failed: task=%d workflow_version_id=%d err=%v\n", task.ID, task.WorkflowVersionID, err)
 		w.failTask(parentCtx, task, err.Error(), "worker_prepare_failed", "worker.load_workflow_version")
 		return
 	}
 
 	var def definition.WorkflowDefinition
 	if err := json.Unmarshal(dbVersion.DefinitionJSON, &def); err != nil {
-		log.Printf("worker unmarshal workflow definition failed: task=%d workflow_version_id=%d err=%v", task.ID, task.WorkflowVersionID, err)
+		log.Printf("[flux-workflow] worker unmarshal workflow definition failed: task=%d workflow_version_id=%d err=%v\n", task.ID, task.WorkflowVersionID, err)
 		w.failTask(parentCtx, task, err.Error(), "worker_prepare_failed", "worker.unmarshal_workflow_definition")
 		return
 	}
 
 	// engine 运行任务
-	log.Printf("worker execute task: task=%d workflow=%s version=%d", task.ID, def.Name, dbVersion.ID)
+	log.Printf("[flux-workflow] worker execute task: task=%d workflow=%s version=%d\n", task.ID, def.Name, dbVersion.ID)
 	taskID := task.ID
 	result := w.runTask(ctxTimeout, task, &def)
 	switch result.Status {
@@ -177,7 +178,7 @@ func (w *Worker) handle(parentCtx context.Context, task *domain.Task) {
 		return
 	}
 
-	fmt.Printf("worker execute task failed: task=%d workflow=%s retry_count=%d err=%v", taskID, def.Name, task.RetryCount, result.Err)
+	fmt.Printf("[flux-workflow] worker execute task failed: task=%d workflow=%s retry_count=%d err=%vn", taskID, def.Name, task.RetryCount, result.Err)
 
 	// 失败重试
 	task.RetryCount++
@@ -191,7 +192,7 @@ func (w *Worker) handle(parentCtx context.Context, task *domain.Task) {
 
 	if w.taskRetryService != nil {
 		if retryErr := w.taskRetryService.PrepareTaskRetry(parentCtx, taskID, engine.RetryTriggerRecovery, "", nil); retryErr != nil {
-			log.Printf("worker prepare retry failed: task=%d retry_count=%d err=%v", taskID, task.RetryCount, retryErr)
+			log.Printf("[flux-workflow] worker prepare retry failed: task=%d retry_count=%d err=%v\n", taskID, task.RetryCount, retryErr)
 			w.failTask(parentCtx, task, retryErr.Error(), "retry_prepare_failed", "worker.prepare_retry")
 			return
 		}
@@ -211,7 +212,7 @@ func (w *Worker) failTask(ctx context.Context, task *domain.Task, reason string,
 	task.Status = domain.TaskFailed
 	task.ErrorMessage = reason
 	if err := w.taskRepo.Update(ctx, task); err != nil {
-		log.Printf("worker persist failed task status failed: task=%d err=%v", task.ID, err)
+		log.Printf("[flux-workflow] worker persist failed task status failed: task=%d err=%v\n", task.ID, err)
 	}
 	w.publishFinalFailed(task, reason, finalReason, source)
 

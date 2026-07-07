@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/tuxi/flux-workflow/cost"
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/engine/graph"
@@ -13,9 +16,6 @@ import (
 	"github.com/tuxi/flux-workflow/pkg/uuid"
 	"github.com/tuxi/flux-workflow/repository"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"log"
-	"sync"
-	"time"
 
 	workflow "github.com/tuxi/flux-workflow/workflow"
 
@@ -661,8 +661,8 @@ func (e *Engine) buildNodeInput(
 		}
 		resolved[targetField] = val
 	}
-	log.Println("node:", node.Name)
-	log.Println("resolved input:", resolved)
+	//log.Println("node:", node.Name)
+	//log.Println("resolved input:", resolved)
 
 	// 3️⃣ 自动 fallback（可选）
 	for field := range schema.Fields {

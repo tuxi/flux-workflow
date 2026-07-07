@@ -100,7 +100,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("run: %v", err)
 	}
-	fmt.Printf("[sync ] task=%d status=%s output=%s\n", res.TaskID, res.Status, res.Task.OutputJSON)
+	fmt.Printf("[flux-workflow] [sync ] task=%d status=%s output=%s\n", res.TaskID, res.Status, res.Task.OutputJSON)
 
 	// 3b. Or submit for asynchronous execution by background workers.
 	if err := rt.Start(ctx, runtime.WithTaskWorkers(2)); err != nil {
@@ -117,12 +117,12 @@ func main() {
 	for time.Now().Before(deadline) {
 		task, err := rt.Status(ctx, taskID)
 		if err == nil && task != nil && isTerminal(string(task.Status)) {
-			fmt.Printf("[async] task=%d status=%s output=%s\n", taskID, task.Status, task.OutputJSON)
+			fmt.Printf("[flux-workflow] [async] task=%d status=%s output=%s\n", taskID, task.Status, task.OutputJSON)
 			return
 		}
 		time.Sleep(20 * time.Millisecond)
 	}
-	log.Fatalf("async task %d did not finish in time", taskID)
+	log.Fatalf("[flux-workflow] async task %d did not finish in time", taskID)
 }
 
 func isTerminal(status string) bool {

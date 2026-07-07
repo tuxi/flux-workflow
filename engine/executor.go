@@ -3,15 +3,16 @@ package engine
 import (
 	"errors"
 	"fmt"
+	"log"
+	"strconv"
+	"time"
+
 	"github.com/tuxi/flux-workflow/cost"
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/engine/graph"
 	"github.com/tuxi/flux-workflow/runtimekeys"
 	"github.com/tuxi/flux-workflow/workflow"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"log"
-	"strconv"
-	"time"
 
 	"github.com/tuxi/flux-workflow/definition"
 	"github.com/tuxi/flux-workflow/tool"
@@ -178,12 +179,12 @@ func (e *Engine) bindSubWorkflowAwaitOnSuspend(execCtx *nodes.NodeExecContext, w
 	subKey := runtimekeys.BuildSubWorkflowKey(runCtx.Task.ID, nodeName, workflowName, input)
 	child, err := e.taskRepo.FindBySubKey(runCtx.Ctx, subKey)
 	if err != nil || child == nil {
-		log.Printf("subworkflow bind await: child not found, fallback to NodeRunning: task=%d node=%s err=%v", runCtx.Task.ID, nodeName, err)
+		log.Printf("[flux-workflow] subworkflow bind await: child not found, fallback to NodeRunning: task=%d node=%s err=%v", runCtx.Task.ID, nodeName, err)
 		return
 	}
 
 	if err := e.upsertSubWorkflowBinding(runCtx, nodeName, child.ID, subKey); err != nil {
-		log.Printf("subworkflow bind await: upsert binding failed, fallback to NodeRunning: task=%d node=%s err=%v", runCtx.Task.ID, nodeName, err)
+		log.Printf("[flux-workflow] subworkflow bind await: upsert binding failed, fallback to NodeRunning: task=%d node=%s err=%v", runCtx.Task.ID, nodeName, err)
 		return
 	}
 
@@ -720,7 +721,7 @@ func (e *Engine) runDAG(
 			// 执行节点
 			err := e.executeNode(runCtx, node, dag)
 
-			fmt.Printf("DEBUG Run executeNode set ReuseKind=%s\n", runtime.ReuseKind)
+			fmt.Printf("[flux-workflow]  Run executeNode set ReuseKind=%s\n", runtime.ReuseKind)
 
 			if err != nil {
 				var suspendErr *domain.WorkflowSuspendedError
@@ -746,7 +747,7 @@ func (e *Engine) runDAG(
 
 				// 可选节点失败：降级为 skip，不让整个任务失败（封面/字幕等非关键步骤）。
 				if isOptionalNode(node) {
-					fmt.Printf("⚠️ optional node %s failed, skip and continue task: %v\n", name, err)
+					fmt.Printf("[flux-workflow] optional node %s failed, skip and continue task: %v\n", name, err)
 					if ferr := e.finalizeOptionalFailedNode(runCtx, name, err, dag); ferr != nil {
 						return RunResult{
 							Status: RunFailed,
@@ -844,7 +845,7 @@ func (e *Engine) tryRecordNodeCost(
 
 	usageFacts, err := e.buildNodeUsageFacts(node, runtime.ResolvedInput, runtime.Output)
 	if err != nil {
-		log.Printf("build node usage facts failed node=%s step=%s err=%v", node.Name, node.Step.Name(), err)
+		log.Printf("[flux-workflow] build node usage facts failed node=%s step=%s err=%v", node.Name, node.Step.Name(), err)
 		return
 	}
 	if len(usageFacts) == 0 && runtime.Checkpoint != nil {
@@ -865,7 +866,7 @@ func (e *Engine) tryRecordNodeCost(
 		UsageFacts:    usageFacts,
 	})
 	if err != nil {
-		log.Printf("cost record node success failed node=%s step=%s err=%v", node.Name, node.Step.Name(), err)
+		log.Printf("[flux-workflow] cost record node success failed node=%s step=%s err=%v", node.Name, node.Step.Name(), err)
 		return
 	}
 	if len(facts) == 0 {
@@ -880,7 +881,7 @@ func (e *Engine) tryRecordNodeCost(
 	runtime.Checkpoint["cost_facts"] = facts
 	runtime.Checkpoint["cost_recorded_output_hash"] = runtime.OutputHash
 	if updateErr := e.nodeRepo.Update(runCtx.Ctx, runtime); updateErr != nil {
-		log.Printf("cost checkpoint update failed node=%s err=%v", node.Name, updateErr)
+		log.Printf("[flux-workflow] cost checkpoint update failed node=%s err=%v\n", node.Name, updateErr)
 	}
 
 	runCtx.EventBus.Publish(runCtx.Task.RootID, &domain.TaskEvent{

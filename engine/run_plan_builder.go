@@ -3,12 +3,13 @@ package engine
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"strconv"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/engine/graph"
 	"github.com/tuxi/flux-workflow/workflow"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"log"
-	"strconv"
 
 	"github.com/tuxi/flux-workflow/definition"
 	"github.com/tuxi/flux/utils"
@@ -273,7 +274,7 @@ func (e *Engine) buildSingleNodePlan(
 		normalized := utils.NormalizeMap(inputs)
 		inputJSON, _ := json.Marshal(normalized)
 		preview := formatJSONPreview(inputJSON)
-		log.Printf("[plan preview] hash mismatch node=%s old=%s new=%s workflowVer=%d input_size=%d input_preview=%s",
+		log.Printf("[flux-workflow] [plan preview] hash mismatch node=%s old=%s new=%s workflowVer=%d input_size=%d input_preview=%s\n",
 			nodeName, parentNode.InputHash, newHash, runCtx.Task.WorkflowVersionID, len(inputJSON), preview)
 		nodePlan.Action = PlanActionExecute
 		nodePlan.Reason = ExecutionReasonInputChanged

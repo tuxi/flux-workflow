@@ -3,13 +3,14 @@ package worker
 import (
 	"context"
 	"errors"
+	"log"
+	"strings"
+	"time"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/engine"
 	"github.com/tuxi/flux-workflow/eventbus"
 	"github.com/tuxi/flux-workflow/repository"
-	"log"
-	"strings"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -71,7 +72,7 @@ func (r *RecoveryScanner) scan(ctx context.Context) {
 
 	runningNodes, err := r.nodeRepo.FindExpiredRunningNodes(ctx, expireTime)
 	if err != nil {
-		log.Println("scan error:", err)
+		log.Println("[flux-workflow] scan error:\n", err)
 		return
 	}
 
@@ -106,7 +107,7 @@ func (r *RecoveryScanner) scan(ctx context.Context) {
 		switch node.State {
 		case domain.NodeSuccessPendingEdges, domain.NodeFailedPendingEdges:
 			if err := r.requeuePendingEdgesTask(ctx, task, node); err != nil {
-				log.Printf("recovery requeue pending-edges task failed: task=%d node=%s err=%v\n", task.ID, node.Name, err)
+				log.Printf("[flux-workflow] recovery requeue pending-edges task failed: task=%d node=%s err=%v\n", task.ID, node.Name, err)
 			}
 			continue
 		}
@@ -135,16 +136,16 @@ func (r *RecoveryScanner) scan(ctx context.Context) {
 				r.failRetryExhausted(ctx, task, node, err)
 				continue
 			}
-			log.Printf("recovery prepare retry failed: task=%d err=%v\n", task.ID, err)
+			log.Printf("[flux-workflow] recovery prepare retry failed: task=%d err=%v\n", task.ID, err)
 			continue
 		}
 
 		if err := r.taskRepo.Enqueue(ctx, task.ID); err != nil {
-			log.Printf("recovery enqueue failed: task=%d err=%v\n", task.ID, err)
+			log.Printf("[flux-workflow] recovery enqueue failed: task=%d err=%v\n", task.ID, err)
 			continue
 		}
 
-		log.Printf("recovery scanner re-enqueued task=%d\n", task.ID)
+		log.Printf("[flux-workflow] recovery scanner re-enqueued task=%d\n", task.ID)
 	}
 }
 
@@ -163,7 +164,7 @@ func (r *RecoveryScanner) hasLiveChildren(ctx context.Context, task *domain.Task
 
 	children, err := r.taskRepo.ListByParentNode(ctx, task.ID, node.Name)
 	if err != nil {
-		log.Printf("recovery list children failed: task=%d node=%s err=%v\n", task.ID, node.Name, err)
+		log.Printf("[flux-workflow] recovery list children failed: task=%d node=%s err=%v\n", task.ID, node.Name, err)
 		return false
 	}
 
@@ -176,7 +177,7 @@ func (r *RecoveryScanner) hasLiveChildren(ctx context.Context, task *domain.Task
 		case domain.TaskPending:
 			live = true
 			if err := r.taskRepo.Enqueue(ctx, child.ID); err != nil {
-				log.Printf("recovery re-enqueue pending child failed: parent=%d child=%d err=%v\n", task.ID, child.ID, err)
+				log.Printf("[flux-workflow] recovery re-enqueue pending child failed: parent=%d child=%d err=%v\n", task.ID, child.ID, err)
 			}
 		case domain.TaskRunning, domain.TaskSuspended:
 			live = true
@@ -184,7 +185,7 @@ func (r *RecoveryScanner) hasLiveChildren(ctx context.Context, task *domain.Task
 	}
 
 	if live {
-		log.Printf("recovery skip parent retry (live child waiting): parent=%d node=%s state=%s\n", task.ID, node.Name, node.State)
+		log.Printf("[flux-workflow] recovery skip parent retry (live child waiting): parent=%d node=%s state=%s\n", task.ID, node.Name, node.State)
 	}
 	return live
 }
@@ -206,7 +207,7 @@ func (r *RecoveryScanner) cancelRunningNode(ctx context.Context, node *domain.No
 	node.FinishedAt = &now
 	node.LastHeartbeat = nil
 	if err := r.nodeRepo.Update(ctx, node); err != nil {
-		log.Printf("recovery mark cancell node failed failed: task=%d node=%s err=%v\n", node.TaskID, node.Name, err)
+		log.Printf("[flux-workflow] recovery mark cancell node failed failed: task=%d node=%s err=%v\n", node.TaskID, node.Name, err)
 	}
 
 	if r.eventBus != nil {
@@ -234,14 +235,14 @@ func (r *RecoveryScanner) failRetryExhausted(ctx context.Context, task *domain.T
 		node.FinishedAt = &now
 		node.LastHeartbeat = nil
 		if err := r.nodeRepo.Update(ctx, node); err != nil {
-			log.Printf("recovery mark retry-exhausted node failed failed: task=%d node=%s err=%v\n", task.ID, node.Name, err)
+			log.Printf("[flux-workflow] recovery mark retry-exhausted node failed failed: task=%d node=%s err=%v\n", task.ID, node.Name, err)
 		}
 	}
 
 	task.Status = domain.TaskFailed
 	task.ErrorMessage = cause.Error()
 	if err := r.taskRepo.Update(ctx, task); err != nil {
-		log.Printf("recovery mark retry-exhausted task failed failed: task=%d err=%v\n", task.ID, err)
+		log.Printf("[flux-workflow] recovery mark retry-exhausted task failed failed: task=%d err=%v\n", task.ID, err)
 		return
 	}
 
@@ -257,7 +258,7 @@ func (r *RecoveryScanner) failRetryExhausted(ctx context.Context, task *domain.T
 		})
 	}
 
-	log.Printf("recovery scanner marked retry-exhausted task failed: task=%d retry_count=%d\n", task.ID, task.RetryCount)
+	log.Printf("[flux-workflow] recovery scanner marked retry-exhausted task failed: task=%d retry_count=%d\n", task.ID, task.RetryCount)
 }
 
 func (r *RecoveryScanner) requeuePendingEdgesTask(ctx context.Context, task *domain.Task, node *domain.NodeRuntime) error {
@@ -279,6 +280,6 @@ func (r *RecoveryScanner) requeuePendingEdgesTask(ctx context.Context, task *dom
 		return err
 	}
 
-	log.Printf("recovery scanner re-enqueued pending-edges task=%d node=%s state=%s\n", task.ID, node.Name, node.State)
+	log.Printf("[flux-workflow] recovery scanner re-enqueued pending-edges task=%d node=%s state=%s\n", task.ID, node.Name, node.State)
 	return nil
 }

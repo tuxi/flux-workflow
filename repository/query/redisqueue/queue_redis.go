@@ -112,7 +112,7 @@ func (q *RedisQueue) PopAndReserve(ctx context.Context) (int64, error) {
 		return 0, redis.Nil
 	}
 	taskID := result.(string)
-	fmt.Printf("PopAndReserve Cache TaskID:%v Type:%T\n", result, result)
+	fmt.Printf("[flux-workflow] PopAndReserve Cache TaskID:%v Type:%T\n", result, result)
 	id, err := strconv.ParseInt(taskID, 10, 64)
 	if err != nil {
 		return 0, err
@@ -153,7 +153,7 @@ func (q *RedisQueue) Recover(ctx context.Context) error {
 
 		_, err := pipe.Exec(ctx)
 		if err != nil {
-			log.Println("recover move failed:", err)
+			log.Println("[flux-workflow] recover move failed:\n", err)
 		}
 	}
 

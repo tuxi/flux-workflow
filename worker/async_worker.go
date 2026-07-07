@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"runtime/debug"
+	"time"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/engine"
 	"github.com/tuxi/flux-workflow/eventbus"
 	"github.com/tuxi/flux-workflow/repository"
-	"log"
-	"runtime/debug"
-	"time"
 
 	"github.com/tuxi/flux-workflow/tool"
 )
@@ -64,7 +65,7 @@ func (w *AsyncWorker) Start(ctx context.Context, consumer string) {
 				return // 上下文取消，优雅退出
 			}
 			if !errors.Is(err, engine.ErrNoJob) {
-				log.Printf("async worker consume failed: consumer=%s err=%v", consumer, err)
+				log.Printf("[flux-workflow] async worker consume failed: consumer=%s err=%v\n", consumer, err)
 			}
 			continue
 		}

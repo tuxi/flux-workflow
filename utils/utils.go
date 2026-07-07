@@ -496,9 +496,9 @@ func NewCommand(ctx context.Context, name string, args ...string) *exec.Cmd {
 }
 
 func Infof(format string, args ...interface{}) {
-	fmt.Printf("[INFO] "+format, args...)
+	fmt.Printf("[flux-workflow] [INFO] "+format, args...)
 }
 
 func Errorf(format string, args ...interface{}) {
-	fmt.Printf("[ERROR] "+format, args...)
+	fmt.Printf("[flux-workflow] [ERROR] "+format, args...)
 }

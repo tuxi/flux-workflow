@@ -3,9 +3,10 @@ package engine
 import (
 	"context"
 	"fmt"
-	"github.com/tuxi/flux-workflow/domain"
 	"strconv"
 	"time"
+
+	"github.com/tuxi/flux-workflow/domain"
 
 	"github.com/tuxi/flux/utils"
 )
@@ -84,7 +85,7 @@ func (e *Engine) rescheduleSubWorkflowBinding(ctx context.Context, binding *doma
 	binding.NextPollAt = &next
 	binding.PollAttempts++
 	if err := e.awaitBindingRepo.Update(ctx, binding); err != nil {
-		fmt.Printf("subworkflow reconcile reschedule failed: binding=%d err=%v\n", binding.ID, err)
+		fmt.Printf("[flux-workflow] subworkflow reconcile reschedule failed: binding=%d err=%v\n", binding.ID, err)
 	}
 }
 

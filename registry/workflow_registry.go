@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/repository"
-	"time"
 
 	"github.com/tuxi/flux-workflow/definition"
 )
@@ -53,17 +54,17 @@ func (r *WorkflowRegistry) RegisterAndSync(ctx context.Context, def *definition.
 }
 
 func (r *WorkflowRegistry) Sync(ctx context.Context) error {
-	fmt.Println("WorkflowRegistry Sync Start")
+	fmt.Println("[flux-workflow] WorkflowRegistry Sync Start")
 
 	for name, wf := range r.workflows {
-		fmt.Println("sync workflow:", name)
+		fmt.Println("[flux-workflow] sync workflow:", name)
 
 		if err := r.syncWorkflow(ctx, wf); err != nil {
 			return err
 		}
 	}
 
-	fmt.Println("WorkflowRegistry Sync Finished")
+	fmt.Println("[flux-workflow] WorkflowRegistry Sync Finished")
 	return nil
 }
 
@@ -108,15 +109,15 @@ func (r *WorkflowRegistry) syncWorkflow(
 			// hash 未变，但定义 JSON 可能因非语义字段（如 label）变化而不同
 			js, _ := json.Marshal(def)
 			if bytes.Equal(js, latest.DefinitionJSON) {
-				fmt.Println("workflow unchanged skip:", def.Name)
+				fmt.Println("[flux-workflow] workflow unchanged skip:", def.Name)
 				return nil
 			}
-			fmt.Println("workflow definition json updated (non-semantic change):", def.Name)
+			fmt.Println("[flux-workflow] workflow definition json updated (non-semantic change):", def.Name)
 			return r.versionRepo.UpdateDefinitionJSON(ctx, latest.ID, js)
 		}
 	}
 
-	fmt.Println("workflow changed publish new version:", def.Name)
+	fmt.Println("[flux-workflow] workflow changed publish new version:", def.Name)
 
 	//--------------------------------
 	// 3. 先发布新版本

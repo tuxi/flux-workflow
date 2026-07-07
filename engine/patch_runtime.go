@@ -2,10 +2,11 @@ package engine
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/workflow"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"strings"
 )
 
 // applySinglePatchToRuntime
@@ -17,18 +18,18 @@ func (e *Engine) applySinglePatchToRuntime(
 	runtime *domain.NodeRuntime,
 	patch domain.RuntimePatch,
 ) error {
-	fmt.Printf("PATCH BEFORE: %+v\n", runtime.Output)
+	fmt.Printf("[flux-workflow]  PATCH BEFORE: %+v\n", runtime.Output)
 	if runtime == nil {
 		return fmt.Errorf("runtime is nil")
 	}
 	if runtime.Name != patch.Node {
-		return fmt.Errorf("runtime node mismatch: runtime=%s patch=%s", runtime.Name, patch.Node)
+		return fmt.Errorf("[flux-workflow] runtime node mismatch: runtime=%s patch=%s", runtime.Name, patch.Node)
 	}
 
 	if err := e.applySinglePatchInMemory(ctx, wf, runtime, patch); err != nil {
 		return err
 	}
-	fmt.Printf("PATCH AFTER: %+v\n", runtime.Output)
+	fmt.Printf("[flux-workflow] PATCH AFTER: %+v\n", runtime.Output)
 	return e.nodeRepo.Update(ctx.Ctx, runtime)
 }
 
