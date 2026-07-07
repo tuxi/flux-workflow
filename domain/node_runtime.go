@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 type NodeState string

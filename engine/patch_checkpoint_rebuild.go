@@ -2,13 +2,14 @@ package engine
 
 import (
 	"fmt"
-	"github.com/tuxi/flux-workflow/domain"
-	"github.com/tuxi/flux-workflow/workflow"
-	"github.com/tuxi/flux-workflow/workflow/nodes"
 	"sort"
 	"strconv"
 
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/workflow"
+	"github.com/tuxi/flux-workflow/workflow/nodes"
+
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 func (e *Engine) rebuildNodeOutputFromCheckpoint(

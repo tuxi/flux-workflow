@@ -3,12 +3,13 @@ package query
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/domain/entity"
 	"github.com/tuxi/flux-workflow/repository"
-	"time"
 
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 
 	"gorm.io/gorm"
 )

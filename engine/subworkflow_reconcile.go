@@ -8,7 +8,7 @@ import (
 
 	"github.com/tuxi/flux-workflow/domain"
 
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 // ReconcileSubWorkflowBinding 是 subworkflow await binding 的 poll 对账兜底（P2）。

@@ -6,13 +6,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/tuxi/flux-workflow/domain"
 	"reflect"
 	"strconv"
 	"strings"
 
+	"github.com/tuxi/flux-workflow/domain"
+
 	"github.com/tuxi/flux-workflow/tool"
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 const (

@@ -12,7 +12,7 @@ import (
 	"github.com/tuxi/flux-workflow/workflow/nodes"
 
 	"github.com/tuxi/flux-workflow/definition"
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 func (e *Engine) BuildRunPlan(

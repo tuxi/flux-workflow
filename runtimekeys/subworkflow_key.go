@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 // BuildSubWorkflowKey 构建 SubKey（幂等）

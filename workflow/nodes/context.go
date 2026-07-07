@@ -7,15 +7,16 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/tuxi/flux-workflow/domain"
-	"github.com/tuxi/flux-workflow/eventbus"
 	"strconv"
 	"sync"
 	"time"
 
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/eventbus"
+
 	"github.com/tuxi/flux-workflow/definition"
 	"github.com/tuxi/flux-workflow/tool"
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 
 	"github.com/expr-lang/expr"
 	"github.com/expr-lang/expr/vm"

@@ -4,13 +4,14 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"github.com/tuxi/flux-workflow/domain"
-	"github.com/tuxi/flux-workflow/runtimekeys"
 	"strconv"
 	"strings"
 
+	"github.com/tuxi/flux-workflow/domain"
+	"github.com/tuxi/flux-workflow/runtimekeys"
+
 	"github.com/tuxi/flux-workflow/tool"
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 const (

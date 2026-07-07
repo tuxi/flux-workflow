@@ -6,7 +6,7 @@ import (
 	"github.com/tuxi/flux-workflow/workflow/nodes"
 
 	"github.com/tuxi/flux-workflow/tool"
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 func ValidateUsageFacts(rawFacts []map[string]any, schema tool.DataSchema) error {

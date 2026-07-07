@@ -5,6 +5,10 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"sync"
+	"testing"
+	"time"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/dto"
 	"github.com/tuxi/flux-workflow/eventbus"
@@ -12,15 +16,12 @@ import (
 	"github.com/tuxi/flux-workflow/runtimekeys"
 	"github.com/tuxi/flux-workflow/workflow"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"sync"
-	"testing"
-	"time"
 
 	repository2 "github.com/tuxi/flux-workflow/repository"
 
 	"github.com/tuxi/flux-workflow/definition"
 	"github.com/tuxi/flux-workflow/tool"
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 
 	"github.com/stretchr/testify/require"
 	"gorm.io/datatypes"

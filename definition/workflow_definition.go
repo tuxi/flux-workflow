@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"sort"
 
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 // WorkflowDefinition 表示一个“工作流产品”——描述 DAG 拓扑、输入输出契约

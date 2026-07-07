@@ -4,13 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
+
 	"github.com/tuxi/flux-workflow/domain"
 	"github.com/tuxi/flux-workflow/runtimekeys"
 	"github.com/tuxi/flux-workflow/workflow/nodes"
-	"strings"
 
 	"github.com/tuxi/flux-workflow/definition"
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 type ParentFanoutNodeKind string

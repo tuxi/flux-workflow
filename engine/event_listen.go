@@ -10,7 +10,7 @@ import (
 
 	"time"
 
-	"github.com/tuxi/flux/utils"
+	"github.com/tuxi/flux-workflow/utils"
 )
 
 // busSub 记录一条 eventbus 订阅，Close 时逐条退订。
