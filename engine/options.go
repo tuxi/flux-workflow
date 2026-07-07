@@ -13,22 +13,27 @@ import (
 type EngineOption func(*engineConfig)
 
 type engineConfig struct {
-	taskRepo            repository.TaskRepository
-	nodeRepo            repository.NodeRuntimeRepository
-	awaitBindingRepo    repository.AwaitBindingRepository
-	workflowVersionRepo repository.WorkflowVersionRepository
-	workflowRepo        repository.WorkflowRepository
-	builder             *workflow.Builder
-	eventBus            *eventbus.EventBus
-	eventRepo           repository.EventRepository
-	jobQueue            AsyncJobQueue
-	dLocker             lock.DistributedLock
-	costRecorder        cost.Recorder
+	taskRepo                  repository.TaskRepository
+	nodeRepo                  repository.NodeRuntimeRepository
+	awaitBindingRepo          repository.AwaitBindingRepository
+	workflowVersionRepo       repository.WorkflowVersionRepository
+	workflowRepo              repository.WorkflowRepository
+	builder                   *workflow.Builder
+	eventBus                  *eventbus.EventBus
+	eventRepo                 repository.EventRepository
+	jobQueue                  AsyncJobQueue
+	dLocker                   lock.DistributedLock
+	costRecorder              cost.Recorder
+	subWorkflowBindingEnabled bool
 }
 
 // WithTaskRepo is required — stores and retrieves task state.
 func WithTaskRepo(r repository.TaskRepository) EngineOption {
 	return func(c *engineConfig) { c.taskRepo = r }
+}
+
+func WithSubWorkflowBinding(enabled bool) EngineOption {
+	return func(c *engineConfig) { c.subWorkflowBindingEnabled = enabled }
 }
 
 // WithNodeRepo is required — stores and retrieves per-node runtime state.
@@ -107,5 +112,6 @@ func New(opts ...EngineOption) *Engine {
 	if cfg.costRecorder != nil {
 		eng.SetCostRecorder(cfg.costRecorder)
 	}
+	eng.SetSubWorkflowBinding(cfg.subWorkflowBindingEnabled)
 	return eng
 }

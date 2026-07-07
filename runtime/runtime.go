@@ -172,8 +172,8 @@ func newRuntime(
 		engine.WithEventRepo(eventRepo),
 		engine.WithJobQueue(jobQ),
 		engine.WithDistributedLock(dLock),
+		engine.WithSubWorkflowBinding(true),
 	)
-
 	retrySvc := engine.NewTaskRetryService(wfVerRepo, taskRepo, nodeRepo, awaitRepo, builder)
 
 	return &Runtime{
